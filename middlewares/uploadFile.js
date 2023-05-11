@@ -7,7 +7,8 @@ exports.uploadFile = (
   pohonimg,
   file_rekom_rs,
   file_kk,
-  file_ktp
+  file_ktp,
+  file_angkut_jenazah
 ) => {
   cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
@@ -23,6 +24,9 @@ exports.uploadFile = (
         case "file_ktp":
         case "file_kk":
           cb(null, "public/file_rusunawas"); //Lokasi penyimpanan file
+          break;
+        case "file_angkut_jenazah":
+          cb(null, "public/file_angkut_jenazahs"); //Lokasi penyimpanan file
           break;
         case "file_rekom_rs":
           cb(null, "public/file_makams"); //Lokasi penyimpanan file
@@ -44,6 +48,7 @@ exports.uploadFile = (
   const fileFilter = function (req, file, cb) {
     if (
       //   file.fieldname === imageFile &&
+      file.fieldname === file_angkut_jenazah &&
       file.fieldname === file_ktp &&
       file.fieldname === file_kk &&
       file.fieldname === file_rekom_rs &&
@@ -79,6 +84,10 @@ exports.uploadFile = (
     //   name: imageFile,
     //   maxCount: 1,
     // },
+    {
+      name: file_angkut_jenazah,
+      maxCount: 1,
+    },
     {
       name: file_kk,
       maxCount: 1,

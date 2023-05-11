@@ -1,3 +1,180 @@
+# auth
+
+admin
+
+- put semua pengaduan
+- deleteUser dan getAllUser
+
+Guest
+
+- create add semua pengaduan
+
+# API'S
+
+id dan password
+
+Guest :
+"id": "2222222",
+"password": "1234"
+
+"id": "12345",
+"password": "1234567"
+
+Admin :
+"id": "1111111",
+"password": "1234"
+
+"id": "54321",  
+"password": "1234567"
+
+## Api user
+
+- login
+
+  `  post: https//localhost:3000/user/login`
+
+- addUser/Sign up
+
+  `  post: localhost:3000/user/register`
+
+- getAllUser(role)
+
+  `  GET: localhost:3000/user/?role=Guest`
+
+- getUserByid
+
+  `  GET: localhost:3000/user/:id`
+
+- deleteUserByid
+
+  `  delete: localhost:3000/user/:id`
+
+- updateUserByid
+
+  `  put: localhost:3000/user/:id`
+
+## Api makam_pacekeras
+
+- getAllmakamPacekeras(status)
+
+  `  GET: localhost:3000/makam_pacekeras/?status=Proses`
+  `  GET: localhost:3000/makam_pacekeras/?status=Diterima`
+  `  GET: localhost:3000/makam_pacekeras/?status=Ditolak`
+
+- getmakamPacekerasByid
+
+  `  GET: localhost:3000/makam_pacekeras/:id`
+
+- addmakamPacekeras
+
+`  post: localhost:3000/makam_pacekeras/`
+
+- deletemakamPacekerasByid
+
+  `  delete: localhost:3000/makam_pacekeras/:id`
+
+- updateUserByid
+
+  `  put: localhost:3000/makam_pacekeras/:id`
+
+## Api pangkas_pohon
+
+- getAllPangkas_pohon(status)
+
+  `  GET: localhost:3000/pangkas_pohon/?status=Proses`
+  `  GET: localhost:3000/pangkas_pohon/?status=Diterima`
+  `  GET: localhost:3000/pangkas_pohon/?status=Ditolak`
+
+- getPangkas_pohonByid
+
+  `  GET: localhost:3000/pangkas_pohon/:id`
+
+- addPangkas_pohon
+
+  `  post: localhost:3000/pangkas_pohon/`
+
+- deletePangkas_pohonByid
+
+  `  delete: localhost:3000/pangkas_pohon/:id`
+
+- updatePangkas_pohonByid
+
+  `  put: localhost:3000/pangkas_pohon/:id`
+
+## Api pju
+
+- getAllpju(status)
+
+  `  GET: localhost:3000/pju/?status=Proses`
+  `  GET: localhost:3000/pju/?status=Diterima`
+  `  GET: localhost:3000/pju/?status=Ditolak`
+
+- getpjuByid
+
+  `  GET: localhost:3000/pju/:id`
+
+- addpju
+
+  `  post: localhost:3000/pju/`
+
+- deletepjuByid
+
+  `  delete: localhost:3000/pju/:id`
+
+- updatepjuByid
+
+  `  put: localhost:3000/pju/:id`
+
+## Api rusunawa
+
+- getAllrusunawa(status)
+
+  `  GET: localhost:3000/rusunawa/?status=Proses`
+  `  GET: localhost:3000/rusunawa/?status=Ditolak`
+  `  GET: localhost:3000/rusunawa/?status=Diterima`
+
+- getrusunawaByid
+
+  `  GET: localhost:3000/rusunawa/:id`
+
+- addrusunawa
+
+  `  post: localhost:3000/rusunawa/`
+
+- deleterusunawaByid
+
+  `  delete: localhost:3000/rusunawa/:id`
+
+- updaterusunawaByid
+
+  `  put: localhost:3000/rusunawa/:id`
+
+## Api Angkut jenazah
+
+- getAllangkut_jenazah(status)
+
+  `  GET: localhost:3000/angkut_jenazah/?status=Proses`
+  `  GET: localhost:3000/angkut_jenazah/?status=Ditolak`
+  `  GET: localhost:3000/angkut_jenazah/?status=Diterima`
+
+- getangkut_jenazahByid
+
+  `  GET: localhost:3000/angkut_jenazah/:id`
+
+- addangkut_jenazah
+
+  `  post: localhost:3000/angkut_jenazah/`
+
+- deleteangkut_jenazahByid
+
+  `  delete: localhost:3000/angkut_jenazah/:id`
+
+- updateangkut_jenazahByid
+
+  `  put: localhost:3000/angkut_jenazah/:id`
+
+# LINK
+
 link web "https://disperkim.madiunkota.go.id/"
 form "https://docs.google.com/forms/d/e/1FAIpQLSciH6PZ7Eu25ZhYlhYoW9JKwQCWo5EphOFN2j9876hRn5r1hQ/viewform"
 
@@ -28,134 +205,3 @@ npx sequelize-cli model:generate --name angkut_makam_jenazah --attributes userId
 ### psu
 
 npx sequelize-cli model:generate --name psu --attributes userId:integer,nama_perusahaan:string,nama_direktur:string,gender_direktur:string,jabatan:string,alamat_perusahaan:string,telp_perusahaan:string,lokasi:string,no_shgb:string,an_pemilik:string,data_tanah:string,ktp_pemohon:string,data_perusahaan:string,sertifikat_tanah:string,data_ijin_pendukung:string,kop_surat:string,status:string,keterangan:string
-
-## uploadfile.js
-
-const multer = require("multer");
-const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-
-exports.uploadFile = (
-profileImg,
-pohonimg,
-file_rekom_rs,
-file_kk,
-file_ktp
-) => {
-const storage = multer.diskStorage({
-destination: function (req, file, cb) {
-switch (file.fieldname) {
-// case "imageFile":
-// case "detail_one":
-case "file_ktp":
-case "file_kk":
-cb(null, "public/file_rusunawas"); //Lokasi penyimpanan file
-break;
-case "file_rekom_rs":
-cb(null, "public/file_makams"); //Lokasi penyimpanan file
-break;
-case "pohonImg":
-cb(null, "public/pangkas_pohons"); //Lokasi penyimpanan file
-break;
-case "profileImg":
-cb(null, "public/profileImages"); //Lokasi penyimpanan file
-break;
-}
-},
-filename: function (req, file, cb) {
-cb(null, Date.now() + "-" + file.originalname.replace(/\s/g, ""));
-},
-});
-
-// Function untuk filter file berdasarkan type
-const fileFilter = function (req, file, cb) {
-if (
-// file.fieldname === imageFile &&
-file.fieldname === file_ktp &&
-file.fieldname === file_kk &&
-file.fieldname === file_rekom_rs &&
-file.fieldname === pohonimg &&
-file.fieldname === profileImg
-) {
-if (
-!file.originalname.match(
-/\.(jpg|JPG|jpeg|JPEG|png|PNG|pdf|PDF|doc|DOC)$/
-)
-) {
-req.fileValidationError = {
-message: "Only image files are allowed!",
-};
-return cb(new Error("Only image files are allowed!"), false);
-}
-}
-cb(null, true);
-};
-
-const sizeInMb = 10;
-const maxSize = sizeInMb _ 1000 _ 1000; //10Mb
-
-// Eksekusi upload multer dan menentukan disk storage, validation dan maxSize file
-const upload = multer({
-storage,
-fileFilter,
-limits: {
-fileSize: maxSize,
-},
-}).fields([
-// {
-// name: imageFile,
-// maxCount: 1,
-// },
-{
-name: file_kk,
-maxCount: 1,
-},
-{
-name: file_ktp,
-maxCount: 1,
-},
-{
-name: file_rekom_rs,
-maxCount: 1,
-},
-{
-name: pohonimg,
-maxCount: 1,
-},
-{
-name: profileImg,
-maxCount: 1,
-},
-]); //Menentukan jumlah file
-
-return (req, res, next) => {
-upload(req, res, function (err) {
-// Pesan error jika validasi gagal
-if (req.fileValidationError) {
-return res.status(400).send(req.fileValidationError);
-}
-// Jika file upload tidak ada
-if (!req.files && !err) {
-return res.status(400).send({
-message: "Please select files to upload",
-});
-}
-
-      if (err) {
-        // Jika size melebihi batas
-        if (err.code === "LIMIT_FILE_SIZE") {
-          return res.status(400).send({
-            message: "Max file sized 10Mb",
-          });
-        }
-        console.log("Saya Error Akhir", err);
-        return res.status(400).send({
-          message: "Failed Akhir",
-          status: err,
-        });
-      }
-      return next();
-    });
-
-};
-};

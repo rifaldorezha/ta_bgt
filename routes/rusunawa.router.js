@@ -9,11 +9,12 @@ const {
   updaterusunawaByID,
 } = require("../controllers/rusunawa.controller.js");
 const { uploadFile } = require("../middlewares/uploadFile.js");
+const { auth } = require("../middlewares/auth.js");
 
 router.get("/", getAllrusunawa);
 router.get("/:id", getrusunawaByID);
-router.post("/", uploadFile("file_ktp", "file_kk"), addrusunawa);
+router.post("/", auth, uploadFile("file_ktp", "file_kk"), addrusunawa);
 router.delete("/:id", deleterusunawaByID);
-router.put("/:id", uploadFile("file_ktp", "file_kk"), updaterusunawaByID);
+router.put("/:id", auth, uploadFile("file_ktp", "file_kk"), updaterusunawaByID);
 
 module.exports = router;

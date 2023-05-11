@@ -5,8 +5,10 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert("pjus", [
       {
-        userId: "2",
+        userId: "",
         deskripsi_pengaduan: "pengaduan pju 1",
+        status: "Proses",
+        keterangan: "",
         createdAt: new Date(),
         updatedAt: new Date(),
       },

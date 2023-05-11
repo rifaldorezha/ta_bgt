@@ -8,11 +8,12 @@ const {
   deletepjuByID,
   updatepjuByID,
 } = require("../controllers/pju.controller.js");
+const { auth } = require("../middlewares/auth.js");
 
 router.get("/", getAllpju);
 router.get("/:id", getpjuByID);
-router.post("/", addpju);
+router.post("/", auth, addpju);
 router.delete("/:id", deletepjuByID);
-router.put("/:id", updatepjuByID);
+router.put("/:id", auth, updatepjuByID);
 
 module.exports = router;

@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
-const upload = multer();
 
 const {
+  login,
   getAllUser,
   getUserByid,
   addUser,
@@ -11,11 +10,13 @@ const {
   updateUserByid,
 } = require("../controllers/user.controller.js");
 const { uploadFile } = require("../middlewares/uploadFile.js");
+const { auth } = require("../middlewares/auth.js");
 
-router.get("/", getAllUser);
+router.get("/", auth, getAllUser);
 router.get("/:id", getUserByid);
-router.post("/", uploadFile("profileImg"), addUser);
-router.delete("/:id", deleteUserByid);
+router.post("/register", addUser);
+router.post("/login", login);
+router.delete("/:id", auth, deleteUserByid);
 router.put("/:id", uploadFile("profileImg"), updateUserByid);
 
 module.exports = router;

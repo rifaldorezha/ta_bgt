@@ -1,33 +1,152 @@
 const models = require("../models");
-const { user, pangkas_pohon, pju, makam_pacekeras, rusunawa } = models;
+const { user, pangkas_pohon, pju, makam_pacekeras, rusunawa, angkut_jenazah } =
+  models;
 const path = require("path");
 const fs = require("fs");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 module.exports = {
-  login: (req, res) => {},
+  login: async (req, res) => {
+    try {
+      const users = req.body;
 
-  logout: async (req, res) => {},
+      // Check username
+      const checkId = await user.findOne({
+        where: {
+          id: users.id,
+        },
+      });
+      if (!checkId) {
+        return res.status(500).send({
+          status: "failed",
+          message: "Username Or Password don't match",
+        });
+      }
+
+      const isValidPassword = await bcrypt.compare(
+        users.password,
+        checkId.password
+      );
+      if (!isValidPassword) {
+        return res.status(500).send({
+          status: "failed",
+          message: "Username Or Password don't match",
+        });
+      }
+
+      const secretKey = process.env.SECRET_KEY;
+      const token = jwt.sign(
+        {
+          id: checkId.id,
+        },
+        secretKey
+      );
+
+      res.status(200).send({
+        status: "Success",
+        message: "resource succesfully sign In",
+        data: {
+          id: checkId.id,
+          nama: checkId.nama,
+          token,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        status: "failed",
+        message: "Sign In Invalid",
+      });
+    }
+  },
+
+  // Sign Up
+  addUser: async (req, res) => {
+    try {
+      const users = req.body;
+
+      const checkId = await user.findOne({
+        where: {
+          id: users.id,
+        },
+      });
+      if (checkId) {
+        return res.status(500).send({
+          status: "failed",
+          message: "Nik Already Registered",
+        });
+      }
+
+      if (users.id.length < 7) {
+        return res.status(500).send({
+          status: "failed",
+          message: "Id minimal 7 kata!",
+        });
+      }
+
+      if (users.password.length < 4)
+        return res.status(400).send({
+          message: "Password minimal 4 kata!",
+        });
+
+      const salt = await bcrypt.genSalt(10);
+      const hashPassword = await bcrypt.hash(users.password, salt);
+
+      const add = await user.create({
+        ...users,
+        password: hashPassword,
+      });
+
+      res.status(200).send({
+        status: "Success",
+        message: "add User berhasil",
+        data: add,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        status: "failed",
+        message: "User add invalid",
+      });
+    }
+  },
 
   getAllUser: async (req, res) => {
     try {
-      const users = await user.findAll({
-        include: [
-          { model: pangkas_pohon },
-          { model: pju },
-          { model: makam_pacekeras },
-          { model: rusunawa },
-        ],
-        // attributes: {
-        //   exclude: ["createdAt", "updatedAt", "address", "password", "listId"],
-        // },
-      });
-      res.status(200).send({
-        status: "Success",
-        message: "resource has successfully get",
-        data: {
-          users,
+      const userValidasi = await user.findOne({
+        where: {
+          id: req.userId,
         },
       });
+      console.log("uservalidasi >>>", userValidasi);
+      console.log("uservalidasi >>>", userValidasi.role);
+
+      if (userValidasi.role === "Admin") {
+        const role = req.query.role;
+        const users = await user.findAll({
+          include: [
+            { model: pangkas_pohon },
+            { model: pju },
+            { model: makam_pacekeras },
+            { model: rusunawa },
+            { model: angkut_jenazah },
+          ],
+          where: { role },
+        });
+        res.status(200).send({
+          status: "Success",
+          message: "Get data user role",
+          data: {
+            users,
+          },
+        });
+      } else {
+        res.status(500).send({
+          status: "failed",
+          message: `Gagal delete data user, kamu ${userValidasi.role}`,
+        });
+      }
     } catch (error) {
       console.log(error);
       res.status(500).send({
@@ -46,10 +165,8 @@ module.exports = {
           { model: pju },
           { model: makam_pacekeras },
           { model: rusunawa },
+          { model: angkut_jenazah },
         ],
-        // attributes: {
-        //   exclude: ["createdAt", "updatedAt", "address"],
-        // },
       });
       res.status(200).send({
         status: "Success",
@@ -65,34 +182,68 @@ module.exports = {
     }
   },
 
-  addUser: async (req, res) => {
-    if (req.files === null)
-      return res.status(400).json({ msg: "No file Uploaded" });
+  deleteUserByid: async (req, res) => {
+    const { id } = req.params;
     try {
-      const users = req.body;
-      const path = process.env.PATH_FILE_PROFILE;
-      console.log({ ...users });
-      const add = await user.create({
-        ...users,
-        profileImg: path + req.files.profileImg[0].filename,
+      const userValidasi = await user.findOne({
+        where: {
+          id: req.userId,
+        },
       });
+      console.log("uservalidasi >>>", userValidasi);
+      console.log("uservalidasi >>>", userValidasi.role);
 
-      res.status(200).send({
-        status: "Success",
-        message: "add User berhasil",
-        data: add,
-      });
+      if (userValidasi.role === "Admin") {
+        await user
+          .findOne({ where: { id } })
+          .then((file) => {
+            if (file) {
+              const datavalues = file.dataValues;
+              // console.log(datavalues);
+
+              let namaImg = path.basename(datavalues.profileImg);
+              // console.log("filename >>>>", fileName);
+              fs.unlink(`public/profileImages/${namaImg}`, (err) => {
+                if (err) {
+                  console.error(err);
+                  return;
+                }
+                console.log("delete file lama sukses");
+              });
+            } else {
+              console.log(`Data not found for ID ${id}`);
+            }
+          })
+          .catch((error) => {
+            console.error(`Error: ${error}`);
+          });
+        const users = await user.destroy({
+          where: {
+            id,
+          },
+        });
+        res.status(200).send({
+          status: "Success",
+          message: "resource has successfully deleted user",
+        });
+      } else {
+        res.status(500).send({
+          status: "failed",
+          message: `Gagal delete data user, kamu ${userValidasi.role}`,
+        });
+      }
     } catch (error) {
       console.log(error);
       res.status(500).send({
         status: "failed",
-        message: "User add invalid",
+        message: "Delete not found",
       });
     }
   },
 
-  deleteUserByid: async (req, res) => {
+  updateUserByid: async (req, res) => {
     const { id } = req.params;
+
     try {
       const a = await user
         .findOne({ where: { id } })
@@ -118,52 +269,6 @@ module.exports = {
           console.error(`Error: ${error}`);
         });
 
-      const users = await user.destroy({
-        where: {
-          id: id,
-        },
-      });
-      res.status(200).send({
-        status: "Success",
-        message: "resource has successfully deleted user",
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500).send({
-        status: "failed",
-        message: "Delete not found",
-      });
-    }
-  },
-
-  updateUserByid: async (req, res) => {
-    const { id } = req.params;
-
-    const a = await user
-      .findOne({ where: { id } })
-      .then((file) => {
-        if (file) {
-          const datavalues = file.dataValues;
-          // console.log(datavalues);
-
-          let namaImg = path.basename(datavalues.profileImg);
-          // console.log("filename >>>>", fileName);
-          fs.unlink(`public/profileImages/${namaImg}`, (err) => {
-            if (err) {
-              console.error(err);
-              return;
-            }
-            console.log("delete file lama sukses");
-          });
-        } else {
-          console.log(`Data not found for ID ${id}`);
-        }
-      })
-      .catch((error) => {
-        console.error(`Error: ${error}`);
-      });
-
-    try {
       const pathfile = process.env.PATH_FILE_PROFILE;
       let users = req.body;
       users = {
@@ -187,6 +292,7 @@ module.exports = {
           { model: pju },
           { model: makam_pacekeras },
           { model: rusunawa },
+          { model: angkut_jenazah },
         ],
       });
       res.status(200).send({
@@ -213,32 +319,5 @@ module.exports = {
 //   "hp": "12345678",
 //   "password": "3333"
 
-// const data = req.body;
-// try {
-//   let response = await user.create(data);
-//   res.json({
-//     message: "success add data user",
-//     send: response,
-//   });
-// } catch (e) {
-//   res.status(404).send("Gagal menambahkan data user");
-// }
-
-// const data = req.body;
-// const { id } = req.params;
-// try {
-//   const users = await user.findByPk(id);
-
-//   Object.assign(users, data);
-//   users.save();
-//   res.status(201).send({
-//     message: "User updated!",
-//     data: users,
-//   });
-// } catch (error) {
-//   res.status(404).json({ message: "Data tidak ditemukan" });
-// }
-
-// const filepath = path.resolve("public/profileImages/", users.profileImg);
-// console.log("filepath >>>>> ", filepath);
-// fs.unlink(filepath);
+// "id": "12345",
+// "password": "1234567"

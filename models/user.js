@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       });
+      this.hasMany(models.angkut_jenazah, {
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      });
     }
   }
   user.init(
