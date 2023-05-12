@@ -16,6 +16,6 @@ router.get("/", getAllPangkas_pohon);
 router.get("/:id", getPangkas_pohonByID);
 router.post("/", auth, uploadFile("pohonImg"), addPangkas_pohon);
 router.delete("/:id", deletePangkas_pohonByID);
-router.put("/:id", auth, uploadFile("pohonImg"), updatePangkas_pohonByID);
+router.put("/:id", auth, updatePangkas_pohonByID);
 
 module.exports = router;

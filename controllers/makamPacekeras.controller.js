@@ -153,6 +153,7 @@ module.exports = {
 
   updatemakamPacekerasByID: async (req, res) => {
     const { id } = req.params;
+    let makams = req.body;
     try {
       const userValidasi = await user.findOne({
         where: {
@@ -163,39 +164,7 @@ module.exports = {
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Admin") {
-        await makam_pacekeras
-          .findOne({ where: { id } })
-          .then((file) => {
-            if (file) {
-              const datavalues = file.dataValues;
-              // console.log(datavalues);
-
-              let namaImg = path.basename(datavalues.file_rekom_rs);
-              // console.log("filename >>>>", fileName);
-              fs.unlink(`public/file_makams/${namaImg}`, (err) => {
-                if (err) {
-                  console.error(err);
-                  return;
-                }
-                console.log("delete file lama sukses");
-              });
-            } else {
-              console.log(`Data not found for ID ${id}`);
-            }
-          })
-          .catch((error) => {
-            console.error(`Error: ${error}`);
-          });
-
-        const pathfile = process.env.PATH_FILE_MAKAM;
-        let makams = req.body;
-        makams = {
-          file_rekom_rs: pathfile + req.files.file_rekom_rs[0].filename,
-          ...makams,
-        };
-        console.log("file >>>>>>>>", { ...req.files });
-
-        let pohonData = await makam_pacekeras.update(makams, {
+        await makam_pacekeras.update(makams, {
           where: {
             id: id,
           },
@@ -214,9 +183,7 @@ module.exports = {
           status: "Success",
           message:
             "resource has successfully updated data pengaduan Makam pacekeras",
-          data: {
-            makamId,
-          },
+          data: makamId,
         });
       } else {
         res.status(500).send({
@@ -233,3 +200,34 @@ module.exports = {
     }
   },
 };
+
+// await makam_pacekeras
+// .findOne({ where: { id } })
+// .then((file) => {
+//   if (file) {
+//     const datavalues = file.dataValues;
+//     // console.log(datavalues);
+
+//     let namaImg = path.basename(datavalues.file_rekom_rs);
+//     // console.log("filename >>>>", fileName);
+//     fs.unlink(`public/file_makams/${namaImg}`, (err) => {
+//       if (err) {
+//         console.error(err);
+//         return;
+//       }
+//       console.log("delete file lama sukses");
+//     });
+//   } else {
+//     console.log(`Data not found for ID ${id}`);
+//   }
+// })
+// .catch((error) => {
+//   console.error(`Error: ${error}`);
+// });
+
+// const pathfile = process.env.PATH_FILE_MAKAM;
+// makams = {
+// file_rekom_rs: pathfile + req.files.file_rekom_rs[0].filename,
+// ...makams,
+// };
+// console.log("file >>>>>>>>", { ...req.files });

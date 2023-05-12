@@ -17,6 +17,6 @@ router.get("/:id", getmakamPacekerasByID);
 // router.get("/status/:status", getmakamPacekerasByStatus);
 router.post("/", auth, uploadFile("file_rekom_rs"), addmakamPacekeras);
 router.delete("/:id", deletemakamPacekerasByID);
-router.put("/:id", auth, uploadFile("file_rekom_rs"), updatemakamPacekerasByID);
+router.put("/:id", auth, updatemakamPacekerasByID);
 
 module.exports = router;

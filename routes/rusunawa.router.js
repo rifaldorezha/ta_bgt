@@ -15,6 +15,6 @@ router.get("/", getAllrusunawa);
 router.get("/:id", getrusunawaByID);
 router.post("/", auth, uploadFile("file_ktp", "file_kk"), addrusunawa);
 router.delete("/:id", deleterusunawaByID);
-router.put("/:id", auth, uploadFile("file_ktp", "file_kk"), updaterusunawaByID);
+router.put("/:id", auth, updaterusunawaByID);
 
 module.exports = router;

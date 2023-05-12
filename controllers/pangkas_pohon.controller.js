@@ -153,7 +153,7 @@ module.exports = {
 
   updatePangkas_pohonByID: async (req, res) => {
     const { id } = req.params;
-    let pangkas_pohons = req.body;
+
     try {
       const userValidasi = await user.findOne({
         where: {
@@ -164,37 +164,7 @@ module.exports = {
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Admin") {
-        await pangkas_pohon
-          .findOne({ where: { id } })
-          .then((file) => {
-            if (file) {
-              const datavalues = file.dataValues;
-              // console.log(datavalues);
-
-              let namaImg = path.basename(datavalues.pohonImg);
-              // console.log("filename >>>>", fileName);
-              fs.unlink(`public/pangkas_pohons/${namaImg}`, (err) => {
-                if (err) {
-                  console.error(err);
-                  return;
-                }
-                console.log("delete file lama sukses");
-              });
-            } else {
-              console.log(`Data not found for ID ${id}`);
-            }
-          })
-          .catch((error) => {
-            console.error(`Error: ${error}`);
-          });
-
-        const pathfile = process.env.PATH_FILE_PANGKAS;
-        pangkas_pohons = {
-          pohonImg: pathfile + req.files.pohonImg[0].filename,
-          ...pangkas_pohons,
-        };
-
-        let pohonData = await pangkas_pohon.update(pangkas_pohons, {
+        await pangkas_pohon.update(req.body, {
           where: {
             id: id,
           },
@@ -230,3 +200,33 @@ module.exports = {
     }
   },
 };
+
+// await pangkas_pohon
+//           .findOne({ where: { id } })
+//           .then((file) => {
+//             if (file) {
+//               const datavalues = file.dataValues;
+//               // console.log(datavalues);
+
+//               let namaImg = path.basename(datavalues.pohonImg);
+//               // console.log("filename >>>>", fileName);
+//               fs.unlink(`public/pangkas_pohons/${namaImg}`, (err) => {
+//                 if (err) {
+//                   console.error(err);
+//                   return;
+//                 }
+//                 console.log("delete file lama sukses");
+//               });
+//             } else {
+//               console.log(`Data not found for ID ${id}`);
+//             }
+//           })
+//           .catch((error) => {
+//             console.error(`Error: ${error}`);
+//           });
+
+//         const pathfile = process.env.PATH_FILE_PANGKAS;
+//         pangkas_pohons = {
+//           pohonImg: pathfile + req.files.pohonImg[0].filename,
+//           ...pangkas_pohons,
+//         };

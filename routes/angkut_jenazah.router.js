@@ -17,11 +17,6 @@ router.get("/:id", getangkutJenazahByID);
 // router.get("/status/:status", getangkutJenazahByStatus);
 router.post("/", auth, uploadFile("file_angkut_jenazah"), addangkutJenazah);
 router.delete("/:id", deleteangkutJenazahByID);
-router.put(
-  "/:id",
-  auth,
-  uploadFile("file_angkut_jenazah"),
-  updateangkutJenazahByID
-);
+router.put("/:id", auth, updateangkutJenazahByID);
 
 module.exports = router;

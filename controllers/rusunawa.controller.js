@@ -159,6 +159,7 @@ module.exports = {
 
   updaterusunawaByID: async (req, res) => {
     const { id } = req.params;
+    let rusunawas = req.body;
     try {
       const userValidasi = await user.findOne({
         where: {
@@ -169,46 +170,7 @@ module.exports = {
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Admin") {
-        await rusunawa
-          .findOne({ where: { id } })
-          .then((file) => {
-            if (file) {
-              const datavalues = file.dataValues;
-
-              let namaImg1 = path.basename(datavalues.file_ktp);
-              let namaImg2 = path.basename(datavalues.file_kk);
-
-              fs.unlink(`public/file_rusunawas/${namaImg1}`, (err) => {
-                if (err) {
-                  console.error(err);
-                  return;
-                }
-              });
-              fs.unlink(`public/file_rusunawas/${namaImg2}`, (err) => {
-                if (err) {
-                  console.error(err);
-                  return;
-                }
-                console.log("delete 2 file lama sukses");
-              });
-            } else {
-              console.log(`Data not found for ID ${id}`);
-            }
-          })
-          .catch((error) => {
-            console.error(`Error: ${error}`);
-          });
-
-        const pathfile = process.env.PATH_FILE_PROFILE;
-        let rusunawas = req.body;
-        rusunawas = {
-          file_ktp: pathfile + req.files.file_ktp[0].filename,
-          file_kk: pathfile + req.files.file_kk[0].filename,
-          ...rusunawas,
-        };
-        console.log("file >>>>>>>>", { ...req.files });
-
-        let rusunawaData = await rusunawa.update(rusunawas, {
+        await rusunawa.update(rusunawas, {
           where: {
             id: id,
           },
@@ -222,9 +184,7 @@ module.exports = {
         res.status(200).send({
           status: "Success",
           message: "Updated pengaduan penghuni Rusunawa, berhasil",
-          data: {
-            rusunawaId,
-          },
+          data: rusunawaId,
         });
       } else {
         res.status(500).send({
@@ -241,3 +201,41 @@ module.exports = {
     }
   },
 };
+
+// await rusunawa
+//           .findOne({ where: { id } })
+//           .then((file) => {
+//             if (file) {
+//               const datavalues = file.dataValues;
+
+//               let namaImg1 = path.basename(datavalues.file_ktp);
+//               let namaImg2 = path.basename(datavalues.file_kk);
+
+//               fs.unlink(`public/file_rusunawas/${namaImg1}`, (err) => {
+//                 if (err) {
+//                   console.error(err);
+//                   return;
+//                 }
+//               });
+//               fs.unlink(`public/file_rusunawas/${namaImg2}`, (err) => {
+//                 if (err) {
+//                   console.error(err);
+//                   return;
+//                 }
+//                 console.log("delete 2 file lama sukses");
+//               });
+//             } else {
+//               console.log(`Data not found for ID ${id}`);
+//             }
+//           })
+//           .catch((error) => {
+//             console.error(`Error: ${error}`);
+//           });
+
+//         const pathfile = process.env.PATH_FILE_PROFILE;
+//         rusunawas = {
+//           file_ktp: pathfile + req.files.file_ktp[0].filename,
+//           file_kk: pathfile + req.files.file_kk[0].filename,
+//           ...rusunawas,
+//         };
+//         console.log("file >>>>>>>>", { ...req.files });

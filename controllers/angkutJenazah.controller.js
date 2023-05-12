@@ -154,6 +154,7 @@ module.exports = {
 
   updateangkutJenazahByID: async (req, res) => {
     const { id } = req.params;
+    let angkuts = req.body;
     try {
       const userValidasi = await user.findOne({
         where: {
@@ -164,40 +165,7 @@ module.exports = {
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Admin") {
-        await angkut_jenazah
-          .findOne({ where: { id } })
-          .then((file) => {
-            if (file) {
-              const datavalues = file.dataValues;
-              // console.log(datavalues);
-
-              let namafile = path.basename(datavalues.file_angkut_jenazah);
-              // console.log("filename >>>>", fileName);
-              fs.unlink(`public/file_angkut_jenazahs/${namafile}`, (err) => {
-                if (err) {
-                  console.error(err);
-                  return;
-                }
-                console.log("delete file lama sukses");
-              });
-            } else {
-              console.log(`Data not found for ID ${id}`);
-            }
-          })
-          .catch((error) => {
-            console.error(`Error: ${error}`);
-          });
-
-        const pathfile = process.env.PATH_FILE_ANGKUT;
-        let angkuts = req.body;
-        angkuts = {
-          file_angkut_jenazah:
-            pathfile + req.files.file_angkut_jenazah[0].filename,
-          ...angkuts,
-        };
-        console.log("file >>>>>>>>", { ...req.files });
-
-        let angkutData = await angkut_jenazah.update(angkuts, {
+        await angkut_jenazah.update(angkuts, {
           where: {
             id: id,
           },
@@ -216,9 +184,7 @@ module.exports = {
           status: "Success",
           message:
             "resource has successfully data pengangkutan jenazah warga data",
-          data: {
-            angkutId,
-          },
+          data: angkutId,
         });
       } else {
         res.status(500).send({
@@ -235,3 +201,36 @@ module.exports = {
     }
   },
 };
+
+// await angkut_jenazah
+//           .findOne({ where: { id } })
+//           .then((file) => {
+//             if (file) {
+//               const datavalues = file.dataValues;
+//               // console.log(datavalues);
+
+//               let namafile = path.basename(datavalues.file_angkut_jenazah);
+//               // console.log("filename >>>>", fileName);
+//               fs.unlink(`public/file_angkut_jenazahs/${namafile}`, (err) => {
+//                 if (err) {
+//                   console.error(err);
+//                   return;
+//                 }
+//                 console.log("delete file lama sukses");
+//               });
+//             } else {
+//               console.log(`Data not found for ID ${id}`);
+//             }
+//           })
+//           .catch((error) => {
+//             console.error(`Error: ${error}`);
+//           });
+
+//         const pathfile = process.env.PATH_FILE_ANGKUT;
+
+//         angkuts = {
+//           file_angkut_jenazah:
+//             pathfile + req.files.file_angkut_jenazah[0].filename,
+//           ...angkuts,
+//         };
+//         console.log("file >>>>>>>>", { ...req.files });
