@@ -33,6 +33,10 @@ Admin :
 
   `  post: https//localhost:3000/user/login`
 
+- check Auth
+
+  `  post: https//localhost:3000/user/check_auth`
+
 - addUser/Sign up
 
   `  post: localhost:3000/user/register`
@@ -43,15 +47,15 @@ Admin :
 
 - getUserByid
 
-  `  GET: localhost:3000/user/:id`
+  `  GET: localhost:3000/user/users/:id`
 
 - deleteUserByid
 
-  `  delete: localhost:3000/user/:id`
+  `  delete: localhost:3000/user/users/:id`
 
 - updateUserByid
 
-  `  put: localhost:3000/user/:id`
+  `  put: localhost:3000/user/users/:id`
 
 ## Api makam_pacekeras
 

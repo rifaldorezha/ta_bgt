@@ -39,6 +39,7 @@ module.exports = {
       const token = jwt.sign(
         {
           id: checkId.id,
+          role: checkId.role,
         },
         secretKey
       );
@@ -49,6 +50,7 @@ module.exports = {
         data: {
           id: checkId.id,
           nama: checkId.nama,
+          role: checkId.role,
           token,
         },
       });
@@ -57,6 +59,37 @@ module.exports = {
       res.status(500).send({
         status: "failed",
         message: "Sign In Invalid",
+      });
+    }
+  },
+
+  checkAuth: async (req, res) => {
+    try {
+      const id = req.userId;
+      const dataUser = await user.findOne({
+        where: {
+          id,
+        },
+      });
+      if (!dataUser) {
+        return res.status(500).send({
+          status: "Data User tidak ada",
+        });
+      }
+      res.status(200).send({
+        status: "success",
+        message: "resource successfully check auth",
+        data: {
+          id: dataUser.id,
+          nama: dataUser.nama,
+          role: dataUser.role,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        status: "failed",
+        message: "Auth Gagal",
       });
     }
   },
@@ -243,9 +276,10 @@ module.exports = {
 
   updateUserByid: async (req, res) => {
     const { id } = req.params;
+    let users = req.body;
 
     try {
-      const a = await user
+      await user
         .findOne({ where: { id } })
         .then((file) => {
           if (file) {
@@ -270,7 +304,6 @@ module.exports = {
         });
 
       const pathfile = process.env.PATH_FILE_PROFILE;
-      let users = req.body;
       users = {
         profileImg: pathfile + req.files.profileImg[0].filename,
         ...users,

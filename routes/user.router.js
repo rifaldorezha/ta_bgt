@@ -3,6 +3,7 @@ const router = express.Router();
 
 const {
   login,
+  checkAuth,
   getAllUser,
   getUserByid,
   addUser,
@@ -13,10 +14,11 @@ const { uploadFile } = require("../middlewares/uploadFile.js");
 const { auth } = require("../middlewares/auth.js");
 
 router.get("/", auth, getAllUser);
-router.get("/:id", getUserByid);
+router.get("/users/:id", getUserByid);
 router.post("/register", addUser);
 router.post("/login", login);
-router.delete("/:id", auth, deleteUserByid);
-router.put("/:id", uploadFile("profileImg"), updateUserByid);
+router.get("/check_auth", auth, checkAuth);
+router.delete("/users/:id", auth, deleteUserByid);
+router.put("/users/:id", uploadFile("profileImg"), updateUserByid);
 
 module.exports = router;
