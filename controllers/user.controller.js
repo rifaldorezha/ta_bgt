@@ -120,7 +120,7 @@ module.exports = {
 
       if (users.password.length < 4)
         return res.status(400).send({
-          message: "Password minimal 4 kata!",
+          message: "Password gunakan tanggal lahir anda YYYYMMDD",
         });
 
       const salt = await bcrypt.genSalt(10);

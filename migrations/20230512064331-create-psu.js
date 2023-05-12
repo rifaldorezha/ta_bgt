@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("rusunawas", {
+    await queryInterface.createTable("psus", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -18,23 +18,55 @@ module.exports = {
           key: "id",
         },
       },
-      status_kawin: {
+      nama_perusahaan: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      domisili: {
+      nama_direktur: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      jumlah_anggota_keluarga: {
+      jabatan: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      file_ktp: {
+      alamat_perusahaan: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      file_kk: {
+      lokasi_perumahan: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      no_shgb: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      an_pemilik: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      data_tanah: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      file_ktp_pemohon: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      file_data_perusahaan: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      file_sertifikat_tanah: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      file_data_ijin_pendukung: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      file_kop_surat_perusahaan: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -58,6 +90,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("rusunawas");
+    await queryInterface.dropTable("psus");
   },
 };

@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       userId: DataTypes.INTEGER,
       status_kawin: DataTypes.STRING,
+      domisili: DataTypes.STRING,
       jumlah_anggota_keluarga: DataTypes.STRING,
       file_ktp: DataTypes.STRING,
       file_kk: DataTypes.STRING,

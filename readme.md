@@ -57,7 +57,7 @@ Admin :
 
   `  put: localhost:3000/user/users/:id`
 
-## Api makam_pacekeras
+## Api PELAYANAN PERMOHONAN TANAH PEMAKAMAN Mr/Mrs.X
 
 - getAllmakamPacekeras(status)
 
@@ -81,7 +81,7 @@ Admin :
 
   `  put: localhost:3000/makam_pacekeras/:id`
 
-## Api pangkas_pohon
+## Api PELAYANAN PEMAPRASAN DAN PEMANGKASAN POHON
 
 - getAllPangkas_pohon(status)
 
@@ -105,7 +105,7 @@ Admin :
 
   `  put: localhost:3000/pangkas_pohon/:id`
 
-## Api pju
+## Api PELAYANAN PENERANGAN ATAU PERBAIKAN JALAN UMUM
 
 - getAllpju(status)
 
@@ -129,7 +129,7 @@ Admin :
 
   `  put: localhost:3000/pju/:id`
 
-## Api rusunawa
+## Api PELAYANAN CALON PENGHUNI RUSUNAWA
 
 - getAllrusunawa(status)
 
@@ -153,7 +153,7 @@ Admin :
 
   `  put: localhost:3000/rusunawa/:id`
 
-## Api Angkut jenazah
+## Api PELAYANAN PENGANGKUTAN DAN PEMAKAMAN JENAZAH WARGA
 
 - getAllangkut_jenazah(status)
 
@@ -177,10 +177,35 @@ Admin :
 
   `  put: localhost:3000/angkut_jenazah/:id`
 
+## Api PELAYANAN PEMROSESAN SERAH TERIMA SARANA DAN PRASARANA DAN UTILITAS PERUMAHAN
+
+- getAllpsu(status)
+
+  `  GET: localhost:3000/psu/?status=Proses`
+  `  GET: localhost:3000/psu/?status=Ditolak`
+  `  GET: localhost:3000/psu/?status=Diterima`
+
+- getpsuByid
+
+  `  GET: localhost:3000/psu/:id`
+
+- addpsu
+
+  `  post: localhost:3000/psu/`
+
+- deletepsuByid
+
+  `  delete: localhost:3000/psu/:id`
+
+- updatepsuByid
+
+  `  put: localhost:3000/psu/:id`
+
 # LINK
 
 link web "https://disperkim.madiunkota.go.id/"
 form "https://docs.google.com/forms/d/e/1FAIpQLSciH6PZ7Eu25ZhYlhYoW9JKwQCWo5EphOFN2j9876hRn5r1hQ/viewform"
+whimsical https://whimsical.com/WD12F6vhw78iSez6vq4oLW
 
 ### user
 

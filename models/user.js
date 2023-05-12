@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       });
+      this.hasMany(models.psu, {
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      });
     }
   }
   user.init(

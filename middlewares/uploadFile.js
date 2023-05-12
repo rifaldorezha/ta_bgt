@@ -8,7 +8,12 @@ exports.uploadFile = (
   file_rekom_rs,
   file_kk,
   file_ktp,
-  file_angkut_jenazah
+  file_angkut_jenazah,
+  file_ktp_pemohon,
+  file_data_perusahaan,
+  file_sertifikat_tanah,
+  file_data_ijin_pendukung,
+  file_kop_surat_perusahaan
 ) => {
   cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
@@ -21,6 +26,13 @@ exports.uploadFile = (
       switch (file.fieldname) {
         // case "imageFile":
         // case "detail_one":
+        case "file_ktp_pemohon":
+        case "file_data_perusahaan":
+        case "file_sertifikat_tanah":
+        case "file_data_ijin_pendukung":
+        case "file_kop_surat_perusahaan":
+          cb(null, "public/file_psus"); //Lokasi penyimpanan file
+          break;
         case "file_ktp":
         case "file_kk":
           cb(null, "public/file_rusunawas"); //Lokasi penyimpanan file
@@ -48,6 +60,11 @@ exports.uploadFile = (
   const fileFilter = function (req, file, cb) {
     if (
       //   file.fieldname === imageFile &&
+      file.fieldname === file_ktp_pemohon &&
+      file.fieldname === file_data_perusahaan &&
+      file.fieldname === file_sertifikat_tanah &&
+      file.fieldname === file_data_ijin_pendukung &&
+      file.fieldname === file_kop_surat_perusahaan &&
       file.fieldname === file_angkut_jenazah &&
       file.fieldname === file_ktp &&
       file.fieldname === file_kk &&
@@ -84,6 +101,26 @@ exports.uploadFile = (
     //   name: imageFile,
     //   maxCount: 1,
     // },
+    {
+      name: file_ktp_pemohon,
+      maxCount: 1,
+    },
+    {
+      name: file_data_perusahaan,
+      maxCount: 1,
+    },
+    {
+      name: file_sertifikat_tanah,
+      maxCount: 1,
+    },
+    {
+      name: file_data_ijin_pendukung,
+      maxCount: 1,
+    },
+    {
+      name: file_kop_surat_perusahaan,
+      maxCount: 1,
+    },
     {
       name: file_angkut_jenazah,
       maxCount: 1,
