@@ -1,6 +1,13 @@
 const models = require("../models");
-const { user, pangkas_pohon, pju, makam_pacekeras, rusunawa, angkut_jenazah } =
-  models;
+const {
+  user,
+  pangkas_pohon,
+  pju,
+  makam_pacekeras,
+  rusunawa,
+  angkut_jenazah,
+  psu,
+} = models;
 const path = require("path");
 const fs = require("fs");
 const bcrypt = require("bcryptjs");
@@ -111,10 +118,10 @@ module.exports = {
         });
       }
 
-      if (users.id.length < 7) {
+      if (users.id.length < 16) {
         return res.status(500).send({
           status: "failed",
-          message: "Id minimal 7 kata!",
+          message: "Pastikan id/NIK yang dimasukkan benar!",
         });
       }
 
@@ -164,6 +171,7 @@ module.exports = {
             { model: makam_pacekeras },
             { model: rusunawa },
             { model: angkut_jenazah },
+            { model: psu },
           ],
           where: { role },
         });
@@ -199,6 +207,7 @@ module.exports = {
           { model: makam_pacekeras },
           { model: rusunawa },
           { model: angkut_jenazah },
+          { model: psu },
         ],
       });
       res.status(200).send({
@@ -326,6 +335,7 @@ module.exports = {
           { model: makam_pacekeras },
           { model: rusunawa },
           { model: angkut_jenazah },
+          { model: psu },
         ],
       });
       res.status(200).send({

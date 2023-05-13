@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   psu.init(
     {
-      userId: DataTypes.INTEGER,
+      userId: DataTypes.STRING,
       nama_perusahaan: DataTypes.STRING,
       nama_direktur: DataTypes.STRING,
       jabatan: DataTypes.STRING,

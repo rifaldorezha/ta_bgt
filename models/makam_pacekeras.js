@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   makam_pacekeras.init(
     {
-      userId: DataTypes.INTEGER,
+      userId: DataTypes.STRING,
       file_rekom_rs: DataTypes.STRING,
       status: DataTypes.STRING,
       keterangan: DataTypes.STRING,

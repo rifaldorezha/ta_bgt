@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   angkut_jenazah.init(
     {
-      userId: DataTypes.INTEGER,
+      userId: DataTypes.STRING,
       status_jenazah: DataTypes.STRING,
       permohonan_ijin: DataTypes.STRING,
       nama_jenazah: DataTypes.STRING,

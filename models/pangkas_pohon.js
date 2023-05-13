@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   pangkas_pohon.init(
     {
-      userId: DataTypes.INTEGER,
+      userId: DataTypes.STRING,
       deskripsi_pengaduan: DataTypes.STRING,
       pohonImg: DataTypes.STRING,
       status: DataTypes.STRING,

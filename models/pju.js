@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   pju.init(
     {
-      userId: DataTypes.INTEGER,
+      userId: DataTypes.STRING,
       deskripsi_pengaduan: DataTypes.STRING,
       status: DataTypes.STRING,
       keterangan: DataTypes.STRING,

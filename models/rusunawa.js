@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   rusunawa.init(
     {
-      userId: DataTypes.INTEGER,
+      userId: DataTypes.STRING,
       status_kawin: DataTypes.STRING,
       domisili: DataTypes.STRING,
       jumlah_anggota_keluarga: DataTypes.STRING,

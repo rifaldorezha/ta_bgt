@@ -14,18 +14,18 @@ Guest
 id dan password
 
 Guest :
-"id": "2222222",
-"password": "1234"
+"id": "1111111111111111",
+"password": "1111"
 
-"id": "12345",
-"password": "1234567"
+"id": "2222222222222222",
+"password": "2222"
 
 Admin :
-"id": "1111111",
+"id": "DIGUNAKANUNTUKADMIN1",
 "password": "1234"
 
-"id": "54321",  
-"password": "1234567"
+"id": "HANYAUNTUKADMIN2",  
+"password": "4321"
 
 ## Api user
 
