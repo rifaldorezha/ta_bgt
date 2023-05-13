@@ -21,38 +21,13 @@ exports.uploadFile = (
     api_secret: process.env.API_SECRET,
   });
 
-  const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      switch (file.fieldname) {
-        // case "imageFile":
-        // case "detail_one":
-        case "file_ktp_pemohon":
-        case "file_data_perusahaan":
-        case "file_sertifikat_tanah":
-        case "file_data_ijin_pendukung":
-        case "file_kop_surat_perusahaan":
-          cb(null, "public/file_psus"); //Lokasi penyimpanan file
-          break;
-        case "file_ktp":
-        case "file_kk":
-          cb(null, "public/file_rusunawas"); //Lokasi penyimpanan file
-          break;
-        case "file_angkut_jenazah":
-          cb(null, "public/file_angkut_jenazahs"); //Lokasi penyimpanan file
-          break;
-        case "file_rekom_rs":
-          cb(null, "public/file_makams"); //Lokasi penyimpanan file
-          break;
-        case "pohonImg":
-          cb(null, "public/pangkas_pohons"); //Lokasi penyimpanan file
-          break;
-        case "profileImg":
-          cb(null, "public/profileImages"); //Lokasi penyimpanan file
-          break;
-      }
-    },
-    filename: function (req, file, cb) {
-      cb(null, Date.now() + "-" + file.originalname.replace(/\s/g, ""));
+  const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: async (req, file) => {
+      return {
+        folder: "dinas_perumahan",
+        public_id: Date.now() + "-" + file.originalname + "-" + file.fieldname,
+      };
     },
   });
 
@@ -72,11 +47,7 @@ exports.uploadFile = (
       file.fieldname === pohonimg &&
       file.fieldname === profileImg
     ) {
-      if (
-        !file.originalname.match(
-          /\.(jpg|JPG|jpeg|JPEG|png|PNG|pdf|PDF|doc|DOC)$/
-        )
-      ) {
+      if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|pdf|PDF|doc|DOC)$/)) {
         req.fileValidationError = {
           message: "Only image files are allowed!",
         };

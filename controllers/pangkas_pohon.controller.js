@@ -13,8 +13,7 @@ module.exports = {
       });
       res.status(200).send({
         status: "Success",
-        message:
-          "resource has successfully get data pengaduan Pemangkasan Pohon",
+        message: "resource has successfully get data pengaduan Pemangkasan Pohon",
         data: p1,
       });
     } catch (error) {
@@ -58,11 +57,11 @@ module.exports = {
   },
 
   addPangkas_pohon: async (req, res) => {
-    console.log({ ...req.files });
-    if (req.files === null)
-      return res.status(400).json({ msg: "No file Uploaded" });
+    console.log("Req Files: ", req.files.pohonImg[0].path);
+    if (req.files === null) return res.status(400).json({ msg: "No file Uploaded" });
     const pangkas_pohons = req.body;
     try {
+      console.log("req.userId >>>", req.userId);
       const userValidasi = await user.findOne({
         where: {
           id: req.userId,
@@ -76,7 +75,7 @@ module.exports = {
         console.log({ ...pangkas_pohons });
         const add = await pangkas_pohon.create({
           ...pangkas_pohons,
-          pohonImg: path + req.files.pohonImg[0].filename,
+          pohonImg: req.files.pohonImg[0].path,
         });
 
         let pangkasId = await pangkas_pohon.findOne({
@@ -142,9 +141,7 @@ module.exports = {
           id: id,
         },
       });
-      res
-        .status(200)
-        .json({ msg: "Data pengaduan Pemangkasan pohon telah dihapus" });
+      res.status(200).json({ msg: "Data pengaduan Pemangkasan pohon telah dihapus" });
     } catch (error) {
       console.log(error.message);
       res.status(500).json({ msg: "Server error" });
@@ -181,8 +178,7 @@ module.exports = {
         });
         res.status(200).send({
           status: "Success",
-          message:
-            "resource has successfully updated data pengaduan Pemangkasan Pohon",
+          message: "resource has successfully updated data pengaduan Pemangkasan Pohon",
           data: pohonId,
         });
       } else {
