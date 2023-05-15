@@ -26,7 +26,12 @@ exports.uploadFile = (
     params: async (req, file) => {
       return {
         folder: "dinas_perumahan",
-        public_id: Date.now() + "-" + file.originalname + "-" + file.fieldname,
+        public_id:
+          Date.now() +
+          "-" +
+          file.originalname.replace(/\s/g, "") +
+          "-" +
+          file.fieldname,
       };
     },
   });
@@ -47,7 +52,11 @@ exports.uploadFile = (
       file.fieldname === pohonimg &&
       file.fieldname === profileImg
     ) {
-      if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|pdf|PDF|doc|DOC)$/)) {
+      if (
+        !file.originalname.match(
+          /\.(jpg|JPG|jpeg|JPEG|png|PNG|pdf|PDF|doc|DOC)$/
+        )
+      ) {
         req.fileValidationError = {
           message: "Only image files are allowed!",
         };

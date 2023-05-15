@@ -71,21 +71,18 @@ module.exports = {
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Guest") {
-        const path = process.env.PATH_FILE_PSU;
+        // const path = process.env.PATH_FILE_PSU;
         console.log({ ...dataPsu });
         const addPsu = await psu.create({
           ...dataPsu,
-          file_ktp_pemohon: path + req.files.file_ktp_pemohon[0].filename,
-          file_sertifikat_tanah:
-            path + req.files.file_sertifikat_tanah[0].filename,
-          file_data_perusahaan:
-            path + req.files.file_data_perusahaan[0].filename,
-          file_sertifikat_tanah:
-            path + req.files.file_sertifikat_tanah[0].filename,
-          file_data_ijin_pendukung:
-            path + req.files.file_data_ijin_pendukung[0].filename,
+          userId: userValidasi.id,
+          file_ktp_pemohon: req.files.file_ktp_pemohon[0].path,
+          file_sertifikat_tanah: req.files.file_sertifikat_tanah[0].path,
+          file_data_perusahaan: req.files.file_data_perusahaan[0].path,
+          file_sertifikat_tanah: req.files.file_sertifikat_tanah[0].path,
+          file_data_ijin_pendukung: req.files.file_data_ijin_pendukung[0].path,
           file_kop_surat_perusahaan:
-            path + req.files.file_kop_surat_perusahaan[0].filename,
+            req.files.file_kop_surat_perusahaan[0].path,
         });
 
         let psuId = await psu.findOne({

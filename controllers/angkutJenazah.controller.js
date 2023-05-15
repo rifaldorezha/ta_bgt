@@ -73,11 +73,12 @@ module.exports = {
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Guest") {
-        const path = process.env.PATH_FILE_ANGKUT;
+        // const path = process.env.PATH_FILE_ANGKUT;
         console.log({ ...angkuts });
         const add = await angkut_jenazah.create({
           ...angkuts,
-          file_angkut_jenazah: path + req.files.file_angkut_jenazah[0].filename,
+          userId: userValidasi.id,
+          file_angkut_jenazah: req.files.file_angkut_jenazah[0].path,
         });
         console.log("pathh >>>", path);
 

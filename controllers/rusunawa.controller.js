@@ -68,12 +68,13 @@ module.exports = {
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Guest") {
-        const path = process.env.PATH_FILE_RUSUNAWA;
+        // const path = process.env.PATH_FILE_RUSUNAWA;
         console.log({ ...datarusunawas });
         const add = await rusunawa.create({
           ...datarusunawas,
-          file_ktp: path + req.files.file_ktp[0].filename,
-          file_kk: path + req.files.file_kk[0].filename,
+          userId: userValidasi.id,
+          file_ktp: req.files.file_ktp[0].path,
+          file_kk: req.files.file_kk[0].path,
         });
 
         let rusunawaId = await rusunawa.findOne({

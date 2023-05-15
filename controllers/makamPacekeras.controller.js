@@ -72,11 +72,12 @@ module.exports = {
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Guest") {
-        const path = process.env.PATH_FILE_MAKAM;
+        // const path = process.env.PATH_FILE_MAKAM;
         console.log({ ...makams });
         const add = await makam_pacekeras.create({
           ...makams,
-          file_rekom_rs: path + req.files.file_rekom_rs[0].filename,
+          userId: userValidasi.id,
+          file_rekom_rs: req.files.file_rekom_rs[0].path,
         });
         console.log("pathh >>>", path);
 

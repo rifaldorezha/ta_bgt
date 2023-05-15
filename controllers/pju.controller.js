@@ -67,7 +67,10 @@ module.exports = {
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Guest") {
-        const add = await pju.create(data);
+        const add = await pju.create({
+          ...data,
+          userId: userValidasi.id,
+        });
         let pjuId = await pju.findOne({
           where: {
             id: add.id,
