@@ -1,6 +1,6 @@
 const models = require("../models");
-const path = require("path");
-const fs = require("fs");
+const { parse } = require("path");
+const { cld } = require("../middlewares/uploadFile.js");
 const { rusunawa, user } = models;
 
 module.exports = {
@@ -54,38 +54,28 @@ module.exports = {
   },
 
   addrusunawa: async (req, res) => {
-    console.log({ ...req.files });
+    const { file_ktp, file_kk } = req.files;
     if (req.files === null)
       return res.status(400).json({ msg: "No file Uploaded" });
     const datarusunawas = req.body;
     try {
       const userValidasi = await user.findOne({
-        where: {
-          id: req.userId,
-        },
+        where: { id: req.userId },
       });
-      console.log("uservalidasi >>>", userValidasi);
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Guest") {
-        // const path = process.env.PATH_FILE_RUSUNAWA;
         console.log({ ...datarusunawas });
         const add = await rusunawa.create({
           ...datarusunawas,
           userId: userValidasi.id,
-          file_ktp: req.files.file_ktp[0].path,
-          file_kk: req.files.file_kk[0].path,
+          file_ktp: file_ktp[0].path,
+          file_kk: file_kk[0].path,
         });
 
         let rusunawaId = await rusunawa.findOne({
-          where: {
-            id: add.id,
-          },
-          include: [
-            {
-              model: user,
-            },
-          ],
+          where: { id: add.id },
+          include: [{ model: user }],
         });
         res.status(200).send({
           status: "Success",
@@ -109,42 +99,32 @@ module.exports = {
 
   deleterusunawaByID: async (req, res) => {
     const { id } = req.params;
-
     try {
-      const a = await rusunawa
-        .findOne({ where: { id } })
-        .then((file) => {
-          if (file) {
-            const datavalues = file.dataValues;
+      const {
+        dataValues: { file_ktp: namaImg1, file_kk: namaImg2 },
+      } = await rusunawa.findOne({ where: { id } });
 
-            let namaImg1 = path.basename(datavalues.file_ktp);
-            let namaImg2 = path.basename(datavalues.file_kk);
-
-            fs.unlink(`public/file_rusunawas/${namaImg1}`, (err) => {
-              if (err) {
-                console.error(err);
-                return;
-              }
-            });
-            fs.unlink(`public/file_rusunawas/${namaImg2}`, (err) => {
-              if (err) {
-                console.error(err);
-                return;
-              }
-              console.log("delete 2 file lama sukses");
-            });
+      cld.v2.uploader.destroy(
+        "dinas_perumahan/" + parse(namaImg1).name,
+        function (error, result) {
+          if (error) {
+            console.log(error, " Gagal deleted file ktp!");
           } else {
-            console.log(`Data not found for ID ${id}`);
+            console.log(result, " Berhasil deleted file ktp!");
           }
-        })
-        .catch((error) => {
-          console.error(`Error: ${error}`);
-        });
-      let rusunawaData = await rusunawa.destroy({
-        where: {
-          id: id,
-        },
-      });
+        }
+      );
+      cld.v2.uploader.destroy(
+        "dinas_perumahan/" + parse(namaImg2).name,
+        function (error, result) {
+          if (error) {
+            console.log(error, " Gagal deleted file kk!");
+          } else {
+            console.log(result, " Berhasil deleted file kk!");
+          }
+        }
+      );
+      await rusunawa.destroy({ where: { id } });
       res.status(200).send({
         status: "Success",
         message: "Deleted data pengaduan penghuni Rusunawa",
@@ -167,19 +147,14 @@ module.exports = {
           id: req.userId,
         },
       });
-      console.log("uservalidasi >>>", userValidasi);
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Admin") {
         await rusunawa.update(rusunawas, {
-          where: {
-            id: id,
-          },
+          where: { id },
         });
         const rusunawaId = await rusunawa.findOne({
-          where: {
-            id,
-          },
+          where: { id },
           include: [{ model: user }],
         });
         res.status(200).send({

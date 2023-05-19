@@ -1,6 +1,6 @@
 const models = require("../models");
-const path = require("path");
-const fs = require("fs");
+const { parse } = require("path");
+const { cld } = require("../middlewares/uploadFile.js");
 const { makam_pacekeras, user } = models;
 
 module.exports = {
@@ -58,28 +58,23 @@ module.exports = {
   },
 
   addmakamPacekeras: async (req, res) => {
-    console.log({ ...req.files });
+    console.log("Req Files: ", req.file.path);
     if (req.files === null)
       return res.status(400).json({ msg: "No file Uploaded" });
     const makams = req.body;
     try {
       const userValidasi = await user.findOne({
-        where: {
-          id: req.userId,
-        },
+        where: { id: req.userId },
       });
-      console.log("uservalidasi >>>", userValidasi);
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Guest") {
-        // const path = process.env.PATH_FILE_MAKAM;
         console.log({ ...makams });
         const add = await makam_pacekeras.create({
           ...makams,
           userId: userValidasi.id,
-          file_rekom_rs: req.files.file_rekom_rs[0].path,
+          file_rekom_rs: req.file.path,
         });
-        console.log("pathh >>>", path);
 
         let makamId = await makam_pacekeras.findOne({
           where: {
@@ -114,34 +109,24 @@ module.exports = {
   deletemakamPacekerasByID: async (req, res) => {
     const { id } = req.params;
     try {
-      const a = await makam_pacekeras
-        .findOne({ where: { id } })
-        .then((file) => {
-          if (file) {
-            const datavalues = file.dataValues;
-            // console.log(datavalues);
+      const data = await makam_pacekeras.findOne({ where: { id } });
+      const imgId = data.file_rekom_rs;
+      console.log("img id >>> ", imgId);
+      console.log(parse(imgId).name);
 
-            let namaImg = path.basename(datavalues.file_rekom_rs);
-            // console.log("filename >>>>", fileName);
-            fs.unlink(`public/file_makams/${namaImg}`, (err) => {
-              if (err) {
-                console.error(err);
-                return;
-              }
-              console.log("delete file lama sukses");
-            });
+      cld.v2.uploader.destroy(
+        "dinas_perumahan/" + parse(imgId).name,
+        function (error, result) {
+          if (error) {
+            console.log(error, " Gagal deleted file rekom rs!");
           } else {
-            console.log(`Data not found for ID ${id}`);
+            console.log(result, " Berhasil deleted file rekom rs!");
           }
-        })
-        .catch((error) => {
-          console.error(`Error: ${error}`);
-        });
+        }
+      );
 
       await makam_pacekeras.destroy({
-        where: {
-          id: id,
-        },
+        where: { id },
       });
       res
         .status(200)
@@ -157,28 +142,18 @@ module.exports = {
     let makams = req.body;
     try {
       const userValidasi = await user.findOne({
-        where: {
-          id: req.userId,
-        },
+        where: { id: req.userId },
       });
       console.log("uservalidasi >>>", userValidasi);
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Admin") {
         await makam_pacekeras.update(makams, {
-          where: {
-            id: id,
-          },
+          where: { id },
         });
         const makamId = await makam_pacekeras.findOne({
-          where: {
-            id,
-          },
-          include: [
-            {
-              model: user,
-            },
-          ],
+          where: { id },
+          include: [{ model: user }],
         });
         res.status(200).send({
           status: "Success",

@@ -8,8 +8,8 @@ const {
   angkut_jenazah,
   psu,
 } = models;
-const path = require("path");
-const fs = require("fs");
+const { parse } = require("path");
+const { cld } = require("../middlewares/uploadFile.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -20,9 +20,7 @@ module.exports = {
 
       // Check username
       const checkId = await user.findOne({
-        where: {
-          id: users.id,
-        },
+        where: { id: users.id },
       });
       if (!checkId) {
         return res.status(500).send({
@@ -74,9 +72,7 @@ module.exports = {
     try {
       const id = req.userId;
       const dataUser = await user.findOne({
-        where: {
-          id,
-        },
+        where: { id },
       });
       if (!dataUser) {
         return res.status(500).send({
@@ -107,9 +103,7 @@ module.exports = {
       const users = req.body;
 
       const checkId = await user.findOne({
-        where: {
-          id: users.id,
-        },
+        where: { id: users.id },
       });
       if (checkId) {
         return res.status(500).send({
@@ -155,9 +149,7 @@ module.exports = {
   getAllUser: async (req, res) => {
     try {
       const userValidasi = await user.findOne({
-        where: {
-          id: req.userId,
-        },
+        where: { id: req.userId },
       });
       console.log("uservalidasi >>>", userValidasi);
       console.log("uservalidasi >>>", userValidasi.role);
@@ -228,41 +220,29 @@ module.exports = {
     const { id } = req.params;
     try {
       const userValidasi = await user.findOne({
-        where: {
-          id: req.userId,
-        },
+        where: { id: req.userId },
       });
-      console.log("uservalidasi >>>", userValidasi);
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Admin") {
-        await user
-          .findOne({ where: { id } })
-          .then((file) => {
-            if (file) {
-              const datavalues = file.dataValues;
-              // console.log(datavalues);
+        const {
+          dataValues: { profileImg },
+        } = await user.findOne({ where: { id } });
+        console.log("data values >>>", profileImg);
 
-              let namaImg = path.basename(datavalues.profileImg);
-              // console.log("filename >>>>", fileName);
-              fs.unlink(`public/profileImages/${namaImg}`, (err) => {
-                if (err) {
-                  console.error(err);
-                  return;
-                }
-                console.log("delete file lama sukses");
-              });
+        cld.v2.uploader.destroy(
+          "dinas_perumahan/" + parse(profileImg).name,
+          function (error, result) {
+            if (error) {
+              console.log(error, " Gagal deleted file profile image!");
             } else {
-              console.log(`Data not found for ID ${id}`);
+              console.log(result, " Berhasil deleted file profile image!");
             }
-          })
-          .catch((error) => {
-            console.error(`Error: ${error}`);
-          });
-        const users = await user.destroy({
-          where: {
-            id,
-          },
+          }
+        );
+
+        await user.destroy({
+          where: { id },
         });
         res.status(200).send({
           status: "Success",
@@ -286,49 +266,35 @@ module.exports = {
   updateUserByid: async (req, res) => {
     const { id } = req.params;
     let users = req.body;
-
+    console.log("Req Files: ", req.file.path);
     try {
-      await user
-        .findOne({ where: { id } })
-        .then((file) => {
-          if (file) {
-            const datavalues = file.dataValues;
-            // console.log(datavalues);
+      const data = await user.findOne({ where: { id } });
 
-            let namaImg = path.basename(datavalues.profileImg);
-            // console.log("filename >>>>", fileName);
-            fs.unlink(`public/profileImages/${namaImg}`, (err) => {
-              if (err) {
-                console.error(err);
-                return;
-              }
-              console.log("delete file lama sukses");
-            });
-          } else {
-            console.log(`Data not found for ID ${id}`);
+      console.log("data values >>>", data.dataValues.profileImg);
+      if (data.dataValues.profileImg !== null) {
+        cld.v2.uploader.destroy(
+          "dinas_perumahan/" + parse(data.dataValues.profileImg).name,
+          function (error, result) {
+            if (error) {
+              console.log(error, " Gagal deleted file profile image!");
+            } else {
+              console.log(result, " Berhasil deleted file profile image!");
+            }
           }
-        })
-        .catch((error) => {
-          console.error(`Error: ${error}`);
-        });
+        );
+      }
 
-      const pathfile = process.env.PATH_FILE_PROFILE;
       users = {
-        profileImg: pathfile + req.files.profileImg[0].filename,
+        profileImg: req.file.path,
         ...users,
       };
 
-      console.log("file >>>>>>>>", { ...req.files });
-
-      let userData = await user.update(users, {
-        where: {
-          id: id,
-        },
+      console.log("file >>>>>>>>", { ...req.file });
+      await user.update(users, {
+        where: { id },
       });
       const userId = await user.findOne({
-        where: {
-          id,
-        },
+        where: { id },
         include: [
           { model: pangkas_pohon },
           { model: pju },
@@ -341,9 +307,7 @@ module.exports = {
       res.status(200).send({
         status: "Success",
         message: "resource has successfully updated user",
-        data: {
-          userId,
-        },
+        data: userId,
       });
     } catch (error) {
       console.log(error);
@@ -362,5 +326,5 @@ module.exports = {
 //   "hp": "12345678",
 //   "password": "3333"
 
-// "id": "12345",
+// "id": "HANYAUNTUKADMIN2",
 // "password": "1234567"

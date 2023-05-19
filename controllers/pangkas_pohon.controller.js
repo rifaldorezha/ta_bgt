@@ -1,6 +1,6 @@
 const models = require("../models");
-const path = require("path");
-const fs = require("fs");
+const { parse } = require("path");
+const { cld } = require("../middlewares/uploadFile.js");
 const { pangkas_pohon, user } = models;
 
 module.exports = {
@@ -58,38 +58,28 @@ module.exports = {
   },
 
   addPangkas_pohon: async (req, res) => {
-    console.log("Req Files: ", req.files.pohonImg[0].path);
+    console.log("Req Files: ", req.file.path);
     if (req.files === null)
       return res.status(400).json({ msg: "No file Uploaded" });
     const pangkas_pohons = req.body;
     try {
       console.log("req.userId >>>", req.userId);
       const userValidasi = await user.findOne({
-        where: {
-          id: req.userId,
-        },
+        where: { id: req.userId },
       });
-      console.log("uservalidasi >>>", userValidasi);
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Guest") {
-        // const path = process.env.PATH_FILE_PANGKAS;
         console.log({ ...pangkas_pohons });
         const add = await pangkas_pohon.create({
           ...pangkas_pohons,
           userId: userValidasi.id,
-          pohonImg: req.files.pohonImg[0].path,
+          pohonImg: req.file.path,
         });
 
         let pangkasId = await pangkas_pohon.findOne({
-          where: {
-            id: add.id,
-          },
-          include: [
-            {
-              model: user,
-            },
-          ],
+          where: { id: add.id },
+          include: [{ model: user }],
         });
         res.status(200).send({
           status: "Success",
@@ -115,34 +105,23 @@ module.exports = {
     const { id } = req.params;
 
     try {
-      const a = await pangkas_pohon
-        .findOne({ where: { id } })
-        .then((file) => {
-          if (file) {
-            const datavalues = file.dataValues;
-            // console.log(datavalues);
+      const data = await pangkas_pohon.findOne({ where: { id } });
+      const imgId = data.pohonImg;
+      console.log("img id >>> ", imgId);
 
-            let namaImg = path.basename(datavalues.pohonImg);
-            // console.log("filename >>>>", fileName);
-            fs.unlink(`public/pangkas_pohons/${namaImg}`, (err) => {
-              if (err) {
-                console.error(err);
-                return;
-              }
-              console.log("delete file lama sukses");
-            });
+      cld.v2.uploader.destroy(
+        "dinas_perumahan/" + parse(imgId).name,
+        function (error, result) {
+          if (error) {
+            console.log(error, " Gagal deleted file pemangkasan pohon!");
           } else {
-            console.log(`Data not found for ID ${id}`);
+            console.log(result, " Berhasil deleted file pemangkasan pohon!");
           }
-        })
-        .catch((error) => {
-          console.error(`Error: ${error}`);
-        });
+        }
+      );
 
       await pangkas_pohon.destroy({
-        where: {
-          id: id,
-        },
+        where: { id },
       });
       res
         .status(200)
@@ -158,28 +137,17 @@ module.exports = {
 
     try {
       const userValidasi = await user.findOne({
-        where: {
-          id: req.userId,
-        },
+        where: { id: req.userId },
       });
-      console.log("uservalidasi >>>", userValidasi);
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Admin") {
         await pangkas_pohon.update(req.body, {
-          where: {
-            id: id,
-          },
+          where: { id },
         });
         const pohonId = await pangkas_pohon.findOne({
-          where: {
-            id,
-          },
-          include: [
-            {
-              model: user,
-            },
-          ],
+          where: { id },
+          include: [{ model: user }],
         });
         res.status(200).send({
           status: "Success",
@@ -203,6 +171,7 @@ module.exports = {
   },
 };
 
+// update delete
 // await pangkas_pohon
 //           .findOne({ where: { id } })
 //           .then((file) => {
@@ -232,3 +201,21 @@ module.exports = {
 //           pohonImg: pathfile + req.files.pohonImg[0].filename,
 //           ...pangkas_pohons,
 //         };
+
+// Delete
+// if (file) {
+//   const datavalues = file.dataValues;
+//   // console.log(datavalues);
+
+//   let namaImg = path.basename(datavalues.pohonImg);
+//   // console.log("filename >>>>", fileName);
+//   fs.unlink(`public/pangkas_pohons/${namaImg}`, (err) => {
+//     if (err) {
+//       console.error(err);
+//       return;
+//     }
+//     console.log("delete file lama sukses");
+//   });
+// } else {
+//   console.log(`Data not found for ID ${id}`);
+// }

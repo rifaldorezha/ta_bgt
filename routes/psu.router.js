@@ -8,7 +8,7 @@ const {
   deletepsuByID,
   updatepsuByID,
 } = require("../controllers/psu.controller.js");
-const { uploadFile } = require("../middlewares/uploadFile.js");
+const { upload } = require("../middlewares/uploadFile.js");
 const { auth } = require("../middlewares/auth.js");
 
 router.get("/", getAllpsu);
@@ -16,13 +16,13 @@ router.get("/:id", getpsuByID);
 router.post(
   "/",
   auth,
-  uploadFile(
-    "file_ktp_pemohon",
-    "file_data_perusahaan",
-    "file_sertifikat_tanah",
-    "file_data_ijin_pendukung",
-    "file_kop_surat_perusahaan"
-  ),
+  upload.fields([
+    { name: "file_ktp_pemohon", maxCount: 1 },
+    { name: "file_data_perusahaan", maxCount: 1 },
+    { name: "file_sertifikat_tanah", maxCount: 1 },
+    { name: "file_data_ijin_pendukung", maxCount: 1 },
+    { name: "file_kop_surat_perusahaan", maxCount: 1 },
+  ]),
   addpsu
 );
 router.delete("/:id", deletepsuByID);

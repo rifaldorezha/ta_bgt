@@ -59,11 +59,8 @@ module.exports = {
     const data = req.body;
     try {
       const userValidasi = await user.findOne({
-        where: {
-          id: req.userId,
-        },
+        where: { id: req.userId },
       });
-      console.log("uservalidasi >>>", userValidasi);
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Guest") {
@@ -72,14 +69,8 @@ module.exports = {
           userId: userValidasi.id,
         });
         let pjuId = await pju.findOne({
-          where: {
-            id: add.id,
-          },
-          include: [
-            {
-              model: user,
-            },
-          ],
+          where: { id: add.id },
+          include: [{ model: user }],
         });
         res.status(200).send({
           status: "Success",
@@ -126,23 +117,16 @@ module.exports = {
     const { id } = req.params;
     try {
       const userValidasi = await user.findOne({
-        where: {
-          id: req.userId,
-        },
+        where: { id: req.userId },
       });
-      console.log("uservalidasi >>>", userValidasi);
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Admin") {
         await pju.update(dataPju, {
-          where: {
-            id: id,
-          },
+          where: { id },
         });
         const pjuId = await pju.findOne({
-          where: {
-            id,
-          },
+          where: { id },
         });
         res.status(201).send({
           message: "Pengaduan Penerangan Jalan Umum updated!",

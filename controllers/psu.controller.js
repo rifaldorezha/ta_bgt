@@ -1,6 +1,6 @@
 const models = require("../models");
-const path = require("path");
-const fs = require("fs");
+const { parse } = require("path");
+const { cld } = require("../middlewares/uploadFile.js");
 const { psu, user } = models;
 
 module.exports = {
@@ -57,6 +57,13 @@ module.exports = {
   },
 
   addpsu: async (req, res) => {
+    const {
+      file_ktp_pemohon,
+      file_sertifikat_tanah,
+      file_data_perusahaan,
+      file_data_ijin_pendukung,
+      file_kop_surat_perusahaan,
+    } = req.files;
     console.log({ ...req.files });
     if (req.files === null)
       return res.status(400).json({ msg: "No file Uploaded" });
@@ -67,33 +74,23 @@ module.exports = {
           id: req.userId,
         },
       });
-      console.log("uservalidasi >>>", userValidasi);
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Guest") {
-        // const path = process.env.PATH_FILE_PSU;
         console.log({ ...dataPsu });
         const addPsu = await psu.create({
           ...dataPsu,
           userId: userValidasi.id,
-          file_ktp_pemohon: req.files.file_ktp_pemohon[0].path,
-          file_sertifikat_tanah: req.files.file_sertifikat_tanah[0].path,
-          file_data_perusahaan: req.files.file_data_perusahaan[0].path,
-          file_sertifikat_tanah: req.files.file_sertifikat_tanah[0].path,
-          file_data_ijin_pendukung: req.files.file_data_ijin_pendukung[0].path,
-          file_kop_surat_perusahaan:
-            req.files.file_kop_surat_perusahaan[0].path,
+          file_ktp_pemohon: file_ktp_pemohon[0].path,
+          file_data_perusahaan: file_data_perusahaan[0].path,
+          file_sertifikat_tanah: file_sertifikat_tanah[0].path,
+          file_data_ijin_pendukung: file_data_ijin_pendukung[0].path,
+          file_kop_surat_perusahaan: file_kop_surat_perusahaan[0].path,
         });
 
         let psuId = await psu.findOne({
-          where: {
-            id: addPsu.id,
-          },
-          include: [
-            {
-              model: user,
-            },
-          ],
+          where: { id: addPsu.id },
+          include: [{ model: user }],
         });
         res.status(200).send({
           status: "Success",
@@ -119,60 +116,69 @@ module.exports = {
     const { id } = req.params;
 
     try {
-      await psu
-        .findOne({ where: { id } })
-        .then((file) => {
-          if (file) {
-            const datavalues = file.dataValues;
-
-            let namaImg1 = path.basename(datavalues.file_ktp_pemohon);
-            let namaImg2 = path.basename(datavalues.file_data_perusahaan);
-            let namaImg3 = path.basename(datavalues.file_sertifikat_tanah);
-            let namaImg4 = path.basename(datavalues.file_data_ijin_pendukung);
-            let namaImg5 = path.basename(datavalues.file_kop_surat_perusahaan);
-
-            fs.unlink(`public/file_psus/${namaImg1}`, (err) => {
-              if (err) {
-                console.error(err);
-                return;
-              }
-            });
-            fs.unlink(`public/file_psus/${namaImg2}`, (err) => {
-              if (err) {
-                console.error(err);
-                return;
-              }
-            });
-            fs.unlink(`public/file_psus/${namaImg3}`, (err) => {
-              if (err) {
-                console.error(err);
-                return;
-              }
-            });
-            fs.unlink(`public/file_psus/${namaImg4}`, (err) => {
-              if (err) {
-                console.error(err);
-                return;
-              }
-            });
-            fs.unlink(`public/file_psus/${namaImg5}`, (err) => {
-              if (err) {
-                console.error(err);
-                return;
-              }
-              console.log("delete 5 file pengaduan PSU lama sukses");
-            });
-          } else {
-            console.log(`Data not found for ID ${id}`);
-          }
-        })
-        .catch((error) => {
-          console.error(`Error: ${error}`);
-        });
-      await psu.destroy({
-        where: {
-          id: id,
+      const {
+        dataValues: {
+          file_ktp_pemohon: namaImg1,
+          file_sertifikat_tanah: namaImg2,
+          file_data_perusahaan: namaImg3,
+          file_data_ijin_pendukung: namaImg4,
+          file_kop_surat_perusahaan: namaImg5,
         },
+      } = await psu.findOne({ where: { id } });
+
+      cld.v2.uploader.destroy(
+        "dinas_perumahan/" + parse(namaImg1).name,
+        function (error, result) {
+          if (error) {
+            console.log(error, " Gagal deleted file ktp pemohon!");
+          } else {
+            console.log(result, " Berhasil deleted file ktp pemohon!");
+          }
+        }
+      );
+      cld.v2.uploader.destroy(
+        "dinas_perumahan/" + parse(namaImg2).name,
+        function (error, result) {
+          if (error) {
+            console.log(error, " Gagal deleted file sertifikat tanah!");
+          } else {
+            console.log(result, " Berhasil deleted file sertifikat tanah!");
+          }
+        }
+      );
+      cld.v2.uploader.destroy(
+        "dinas_perumahan/" + parse(namaImg3).name,
+        function (error, result) {
+          if (error) {
+            console.log(error, " Gagal deleted file data perusahaan!");
+          } else {
+            console.log(result, " Berhasil deleted file data perusahaan!");
+          }
+        }
+      );
+      cld.v2.uploader.destroy(
+        "dinas_perumahan/" + parse(namaImg4).name,
+        function (error, result) {
+          if (error) {
+            console.log(error, " Gagal deleted file data ijin pendukung!");
+          } else {
+            console.log(result, " Berhasil deleted file data ijin pendukun!");
+          }
+        }
+      );
+      cld.v2.uploader.destroy(
+        "dinas_perumahan/" + parse(namaImg5).name,
+        function (error, result) {
+          if (error) {
+            console.log(error, " Gagal deleted file kop surat perusahaan!");
+          } else {
+            console.log(result, " Berhasil deleted file kop surat perusahaan!");
+          }
+        }
+      );
+
+      await psu.destroy({
+        where: { id },
       });
       res.status(200).send({
         status: "Success",
@@ -196,19 +202,14 @@ module.exports = {
           id: req.userId,
         },
       });
-      console.log("uservalidasi >>>", userValidasi);
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Admin") {
         await psu.update(psus, {
-          where: {
-            id: id,
-          },
+          where: { id },
         });
         const psuId = await psu.findOne({
-          where: {
-            id,
-          },
+          where: { id },
           include: [{ model: user }],
         });
         res.status(200).send({

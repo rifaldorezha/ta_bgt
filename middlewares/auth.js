@@ -23,7 +23,6 @@ exports.auth = async (req, res, next) => {
         return decoded;
       }
     });
-
     req.userId = verifed.id;
 
     next();
