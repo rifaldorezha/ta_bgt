@@ -5,6 +5,7 @@ const { parse } = require("path");
 const { cld } = require("../middlewares/uploadFile.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { Op } = require("sequelize");
 
 module.exports = {
   login: async (req, res) => {
@@ -154,21 +155,43 @@ module.exports = {
 
       if (userValidasi.role === "Admin") {
         const role = req.query.role;
-        const users = await user.findAll({
-          include: [
-            { model: pangkas_pohon },
-            { model: pju },
-            { model: makam_pacekeras },
-            { model: rusunawa },
-            { model: angkut_jenazah },
-            { model: psu },
-          ],
-          where: { role },
-        });
+        const search = req.query.search;
+        let users;
+        if (search) {
+          users = await user.findAll({
+            include: [
+              { model: pangkas_pohon },
+              { model: pju },
+              { model: makam_pacekeras },
+              { model: rusunawa },
+              { model: angkut_jenazah },
+              { model: psu },
+            ],
+            where: {
+              id: {
+                [Op.like]: `%${search}%`,
+              },
+              role,
+            },
+          });
+        } else {
+          users = await user.findAll({
+            include: [
+              { model: pangkas_pohon },
+              { model: pju },
+              { model: makam_pacekeras },
+              { model: rusunawa },
+              { model: angkut_jenazah },
+              { model: psu },
+            ],
+            where: { role },
+          });
+        }
+
         res.status(200).send({
           status: "Success",
           message: "Get data user role",
-          data: { users },
+          data: users,
         });
       } else {
         res.status(500).send({
