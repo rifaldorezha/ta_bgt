@@ -10,7 +10,7 @@ module.exports = {
       const p4 = await rusunawa.findAll({ include: user, where: { status } });
       res.status(200).send({
         status: "Success",
-        message: "Get data pengaduan penghuni Rusunawa",
+        message: "Get data pengaduan Penghuni Rusunawa with status " + status,
         data: p4,
       });
     } catch (error) {
@@ -35,12 +35,12 @@ module.exports = {
     try {
       if (!p4) {
         res.status(404).json({
-          message: "Could not Found data pengaduan penghuni Rusunawa by id",
+          message: "Could not Found data pengaduan Penghuni Rusunawa with id",
         });
       } else {
         res.status(200).send({
           status: "Success",
-          message: "Get data pengaduan penghuni Rusunawa with id",
+          message: "Get data pengaduan Penghuni Rusunawa with id",
           data: p4,
         });
       }
@@ -79,20 +79,20 @@ module.exports = {
         });
         res.status(200).send({
           status: "Success",
-          message: "Add data pengaduan penghuni Rusunawa, berhasil",
+          message: "Add data pengaduan Penghuni Rusunawa, berhasil",
           data: rusunawaId,
         });
       } else {
         res.status(500).send({
           status: "failed",
-          message: `Gagal Add data pengaduan penghuni Rusunawa, kamu ${userValidasi.role}`,
+          message: `Gagal Add data pengaduan Penghuni Rusunawa, kamu ${userValidasi.role}`,
         });
       }
     } catch (error) {
       console.log(error);
       res.status(500).send({
         status: "failed",
-        message: "Add data pengaduan penghuni Rusunawa, gagal",
+        message: "Add data pengaduan Penghuni Rusunawa, gagal",
       });
     }
   },
@@ -127,7 +127,7 @@ module.exports = {
       await rusunawa.destroy({ where: { id } });
       res.status(200).send({
         status: "Success",
-        message: "Deleted data pengaduan penghuni Rusunawa",
+        message: "Deleted data pengaduan Penghuni Rusunawa",
       });
     } catch (error) {
       console.log(error);
@@ -159,13 +159,13 @@ module.exports = {
         });
         res.status(200).send({
           status: "Success",
-          message: "Updated pengaduan penghuni Rusunawa, berhasil",
+          message: "Updated data pengaduan Penghuni Rusunawa, berhasil",
           data: rusunawaId,
         });
       } else {
         res.status(500).send({
           status: "failed",
-          message: `Gagal updated data pengaduan penghuni Rusunawa, kamu ${userValidasi.role}`,
+          message: `Gagal updated data pengaduan Penghuni Rusunawa, kamu ${userValidasi.role}`,
         });
       }
     } catch (error) {

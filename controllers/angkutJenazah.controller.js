@@ -15,7 +15,8 @@ module.exports = {
       res.status(200).send({
         status: "Success",
         message:
-          "resource has successfully get data pengangkutan jenazah warga",
+          "resource has successfully get data pengangkutan jenazah warga with status " +
+          status,
         data: p5,
       });
     } catch (error) {
@@ -40,7 +41,7 @@ module.exports = {
     try {
       if (!p5) {
         res.status(404).json({
-          message: "Could not Found data pengangkutan jenazah warga by id",
+          message: "Could not Found data pengangkutan jenazah warga with id",
         });
       } else {
         res.status(200).send({
@@ -153,13 +154,13 @@ module.exports = {
         res.status(200).send({
           status: "Success",
           message:
-            "resource has successfully data pengangkutan jenazah warga data",
+            "resource has successfully updated data pengangkutan jenazah warga",
           data: angkutId,
         });
       } else {
         res.status(500).send({
           status: "failed",
-          message: `Gagal update data pengangkutan jenazah warga, kamu ${userValidasi.role}`,
+          message: `Gagal updated data pengangkutan jenazah warga, kamu ${userValidasi.role}`,
         });
       }
     } catch (error) {

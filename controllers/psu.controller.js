@@ -13,7 +13,7 @@ module.exports = {
       });
       res.status(200).send({
         status: "Success",
-        message: "resource has successfully get PSU",
+        message: "resource has successfully get PSU with status " + status,
         data: psus,
       });
     } catch (error) {
@@ -38,7 +38,7 @@ module.exports = {
     try {
       if (!psus) {
         res.status(404).json({
-          message: "Could not Found pengaduan PSU by id",
+          message: "Could not Found pengaduan PSU with id",
         });
       } else {
         res.status(200).send({
@@ -70,9 +70,7 @@ module.exports = {
     const dataPsu = req.body;
     try {
       const userValidasi = await user.findOne({
-        where: {
-          id: req.userId,
-        },
+        where: { id: req.userId },
       });
       console.log("uservalidasi >>>", userValidasi.role);
 
@@ -100,14 +98,14 @@ module.exports = {
       } else {
         res.status(500).send({
           status: "failed",
-          message: `Gagal Add pengaduan PSU, kamu ${userValidasi.role}`,
+          message: `Gagal Add data pengaduan PSU, kamu ${userValidasi.role}`,
         });
       }
     } catch (error) {
       console.log(error);
       res.status(500).send({
         status: "failed",
-        message: "Add data pengaduan PSU, gagal",
+        message: "Gagal Add data pengaduan PSU",
       });
     }
   },
@@ -188,7 +186,7 @@ module.exports = {
       console.log(error);
       res.status(500).send({
         status: "failed",
-        message: "Delete not found",
+        message: "Deleted not found",
       });
     }
   },
@@ -198,9 +196,7 @@ module.exports = {
     let psus = req.body;
     try {
       const userValidasi = await user.findOne({
-        where: {
-          id: req.userId,
-        },
+        where: { id: req.userId },
       });
       console.log("uservalidasi >>>", userValidasi.role);
 

@@ -12,7 +12,8 @@ module.exports = {
       res.status(200).send({
         status: "Success",
         message:
-          "resource has successfully get pengaduan Penerangan Jalan Umum",
+          "resource has successfully get data pengaduan Penerangan Jalan Umum with status " +
+          status,
         data: p2,
       });
     } catch (error) {
@@ -37,7 +38,7 @@ module.exports = {
     try {
       if (!p2) {
         res.status(404).json({
-          message: "Could not Found pengaduan Penerangan Jalan Umum by id",
+          message: "Could not Found pengaduan Penerangan Jalan Umum with id",
         });
       } else {
         res.status(200).send({
@@ -74,7 +75,7 @@ module.exports = {
         });
         res.status(200).send({
           status: "Success",
-          message: "Add pengaduan Penerangan Jalan Umum berhasil",
+          message: "Add data pengaduan Penerangan Jalan Umum berhasil",
           data: pjuId,
         });
       } else {
@@ -102,7 +103,8 @@ module.exports = {
       .then(function (deletedRecord) {
         if (deletedRecord === 1) {
           res.status(200).json({
-            message: "Deleted pengaduan Penerangan Jalan Umum successfully",
+            message:
+              "Deleted data pengaduan Penerangan Jalan Umum successfully",
           });
         } else {
           res.status(404).json({
@@ -129,13 +131,13 @@ module.exports = {
           where: { id },
         });
         res.status(201).send({
-          message: "Pengaduan Penerangan Jalan Umum updated!",
+          message: "Data pengaduan Penerangan Jalan Umum updated!",
           data: pjuId,
         });
       } else {
         res.status(500).send({
           status: "failed",
-          message: `Gagal update data pengaduan Penerangan Jalan Umum, kamu ${userValidasi.role}`,
+          message: `Gagal updated data pengaduan Penerangan Jalan Umum, kamu ${userValidasi.role}`,
         });
       }
     } catch (error) {

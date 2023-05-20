@@ -151,7 +151,6 @@ module.exports = {
       const userValidasi = await user.findOne({
         where: { id: req.userId },
       });
-      console.log("uservalidasi >>>", userValidasi);
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Admin") {
@@ -170,14 +169,53 @@ module.exports = {
         res.status(200).send({
           status: "Success",
           message: "Get data user role",
-          data: {
-            users,
-          },
+          data: { users },
         });
       } else {
         res.status(500).send({
           status: "failed",
-          message: `Gagal delete data user, kamu ${userValidasi.role}`,
+          message: `Gagal get data user, kamu ${userValidasi.role}`,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        status: "failed",
+        message: "internal server error",
+      });
+    }
+  },
+
+  getAllpengaduanbyAuth: async (req, res) => {
+    try {
+      const userValidasi = await user.findOne({
+        where: { id: req.userId },
+      });
+      console.log("uservalidasi >>>", userValidasi.id);
+
+      const id = userValidasi.id;
+
+      if (!id) {
+        res.status(500).send({
+          status: "failed",
+          message: `Gagal get data pengaduan berdasarkan current userId`,
+        });
+      } else {
+        const users = await user.findAll({
+          include: [
+            { model: pangkas_pohon },
+            { model: pju },
+            { model: makam_pacekeras },
+            { model: rusunawa },
+            { model: angkut_jenazah },
+            { model: psu },
+          ],
+          where: { id },
+        });
+        res.status(200).send({
+          status: "Success",
+          message: "Get data pengaduan user auth",
+          data: { users },
         });
       }
     } catch (error) {

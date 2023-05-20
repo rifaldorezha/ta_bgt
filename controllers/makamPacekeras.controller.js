@@ -14,7 +14,9 @@ module.exports = {
       });
       res.status(200).send({
         status: "Success",
-        message: "resource has successfully get data pengaduan Makam pacekeras",
+        message:
+          "resource has successfully get data pengaduan Makam pacekeras with status '" +
+          status,
         data: p3,
       });
     } catch (error) {
@@ -39,12 +41,12 @@ module.exports = {
     try {
       if (!p3) {
         res.status(404).json({
-          message: "Could not Found data pengaduan Makam pacekeras by id",
+          message: "Could not Found data pengaduan Makam pacekeras with id",
         });
       } else {
         res.status(200).send({
           status: "Success",
-          message: "Get pengaduan Makam pacekeras with id",
+          message: "Get data pengaduan Makam pacekeras with id",
           data: p3,
         });
       }
@@ -94,14 +96,14 @@ module.exports = {
       } else {
         res.status(500).send({
           status: "failed",
-          message: `Gagal deleted data pengaduan Makam pacekeras, kamu ${userValidasi.role}`,
+          message: `Gagal add data pengaduan Makam pacekeras, kamu ${userValidasi.role}`,
         });
       }
     } catch (error) {
       console.log(error);
       res.status(500).send({
         status: "failed",
-        message: "Gagal add pengaduan Makam pacekeras invalid",
+        message: "Gagal add data pengaduan Makam pacekeras invalid",
       });
     }
   },
@@ -144,7 +146,6 @@ module.exports = {
       const userValidasi = await user.findOne({
         where: { id: req.userId },
       });
-      console.log("uservalidasi >>>", userValidasi);
       console.log("uservalidasi >>>", userValidasi.role);
 
       if (userValidasi.role === "Admin") {
@@ -164,7 +165,7 @@ module.exports = {
       } else {
         res.status(500).send({
           status: "failed",
-          message: `Gagal update data pengaduan Makam pacekeras, kamu ${userValidasi.role}`,
+          message: `Gagal updated data pengaduan Makam pacekeras, kamu ${userValidasi.role}`,
         });
       }
     } catch (error) {

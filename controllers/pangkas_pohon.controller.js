@@ -14,7 +14,8 @@ module.exports = {
       res.status(200).send({
         status: "Success",
         message:
-          "resource has successfully get data pengaduan Pemangkasan Pohon",
+          "resource has successfully get data pengaduan Pemangkasan Pohon with status " +
+          status,
         data: p1,
       });
     } catch (error) {
@@ -39,7 +40,7 @@ module.exports = {
     try {
       if (!p1) {
         res.status(404).json({
-          message: "Could not Found data pengaduan Pemangkasan Pohon by id",
+          message: "Could not Found data pengaduan Pemangkasan Pohon with id",
         });
       } else {
         res.status(200).send({

@@ -49,6 +49,10 @@ Admin :
 
   `  GET: localhost:3000/user/users/:id`
 
+- getAllpengaduanbyAuth
+
+  `  GET: localhost:3000/user/pengaduan/auth`
+
 - deleteUserByid
 
   `  delete: localhost:3000/user/users/:id`
