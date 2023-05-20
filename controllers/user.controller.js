@@ -1,13 +1,6 @@
 const models = require("../models");
-const {
-  user,
-  pangkas_pohon,
-  pju,
-  makam_pacekeras,
-  rusunawa,
-  angkut_jenazah,
-  psu,
-} = models;
+const { user, pangkas_pohon, pju, makam_pacekeras, rusunawa, angkut_jenazah, psu } =
+  models;
 const { parse } = require("path");
 const { cld } = require("../middlewares/uploadFile.js");
 const bcrypt = require("bcryptjs");
@@ -29,10 +22,7 @@ module.exports = {
         });
       }
 
-      const isValidPassword = await bcrypt.compare(
-        users.password,
-        checkId.password
-      );
+      const isValidPassword = await bcrypt.compare(users.password, checkId.password);
       if (!isValidPassword) {
         return res.status(500).send({
           status: "failed",
@@ -79,6 +69,7 @@ module.exports = {
           status: "Data User tidak ada",
         });
       }
+
       res.status(200).send({
         status: "success",
         message: "resource successfully check auth",
@@ -86,6 +77,10 @@ module.exports = {
           id: dataUser.id,
           nama: dataUser.nama,
           role: dataUser.role,
+          gender: dataUser.gender,
+          alamat: dataUser.alamat,
+          profileImg: dataUser.profileImg,
+          hp: dataUser.hp,
         },
       });
     } catch (error) {
