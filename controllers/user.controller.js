@@ -46,6 +46,10 @@ module.exports = {
           id: checkId.id,
           nama: checkId.nama,
           role: checkId.role,
+          gender: checkId.gender,
+          alamat: checkId.alamat,
+          profileImg: checkId.profileImg,
+          hp: checkId.hp,
           token,
         },
       });
