@@ -223,7 +223,7 @@ module.exports = {
           message: `Gagal get data pengaduan berdasarkan current userId`,
         });
       } else {
-        const users = await user.findAll({
+        const users = await user.findOne({
           include: [
             { model: pangkas_pohon },
             { model: pju },
@@ -237,7 +237,7 @@ module.exports = {
         res.status(200).send({
           status: "Success",
           message: "Get data pengaduan user auth",
-          data: { users },
+          data: users,
         });
       }
     } catch (error) {
