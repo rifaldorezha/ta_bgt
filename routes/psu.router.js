@@ -11,7 +11,7 @@ const {
 const { upload } = require("../middlewares/uploadFile.js");
 const { auth } = require("../middlewares/auth.js");
 
-router.get("/", getAllpsu);
+router.get("/", auth, getAllpsu);
 router.get("/:id", getpsuByID);
 router.post(
   "/",

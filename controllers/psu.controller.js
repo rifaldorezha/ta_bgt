@@ -6,11 +6,24 @@ const { psu, user } = models;
 module.exports = {
   getAllpsu: async (req, res) => {
     try {
-      const status = req.query.status;
-      const psus = await psu.findAll({
-        include: user,
-        where: { status },
+      const userValidasi = await user.findOne({
+        where: { id: req.userId },
       });
+
+      const status = req.query.status;
+      let psus;
+      if (userValidasi.role === "Admin") {
+        psus = await psu.findAll({
+          include: user,
+          where: { status },
+        });
+      } else {
+        psus = await psu.findOne({
+          include: user,
+          where: { status, userId: userValidasi.id },
+        });
+      }
+
       res.status(200).send({
         status: "Success",
         message: "resource has successfully get PSU with status " + status,

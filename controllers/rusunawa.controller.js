@@ -6,8 +6,23 @@ const { rusunawa, user } = models;
 module.exports = {
   getAllrusunawa: async (req, res) => {
     try {
+      const userValidasi = await user.findOne({
+        where: { id: req.userId },
+      });
       const status = req.query.status;
-      const p4 = await rusunawa.findAll({ include: user, where: { status } });
+      let p4;
+      if (userValidasi.role === "Admin") {
+        p4 = await rusunawa.findAll({
+          include: user,
+          where: { status },
+        });
+      } else {
+        p4 = await rusunawa.findOne({
+          include: user,
+          where: { status, userId: userValidasi.id },
+        });
+      }
+
       res.status(200).send({
         status: "Success",
         message: "Get data pengaduan Penghuni Rusunawa with status " + status,

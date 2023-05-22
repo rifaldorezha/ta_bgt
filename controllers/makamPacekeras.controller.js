@@ -6,12 +6,24 @@ const { makam_pacekeras, user } = models;
 module.exports = {
   getAllmakamPacekeras: async (req, res) => {
     try {
-      const status = req.query.status;
-      console.log(status);
-      const p3 = await makam_pacekeras.findAll({
-        include: user,
-        where: { status },
+      const userValidasi = await user.findOne({
+        where: { id: req.userId },
       });
+
+      const status = req.query.status;
+      let p3;
+      if (userValidasi.role === "Admin") {
+        p3 = await makam_pacekeras.findAll({
+          include: user,
+          where: { status },
+        });
+      } else {
+        p3 = await makam_pacekeras.findOne({
+          include: user,
+          where: { status, userId: userValidasi.id },
+        });
+      }
+
       res.status(200).send({
         status: "Success",
         message:
@@ -114,7 +126,6 @@ module.exports = {
       const data = await makam_pacekeras.findOne({ where: { id } });
       const imgId = data.file_rekom_rs;
       console.log("img id >>> ", imgId);
-      console.log(parse(imgId).name);
 
       cld.v2.uploader.destroy(
         "dinas_perumahan/" + parse(imgId).name,

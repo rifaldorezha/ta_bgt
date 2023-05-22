@@ -4,11 +4,24 @@ const { pju, user } = models;
 module.exports = {
   getAllpju: async (req, res) => {
     try {
-      const status = req.query.status;
-      const p2 = await pju.findAll({
-        include: user,
-        where: { status },
+      const userValidasi = await user.findOne({
+        where: { id: req.userId },
       });
+
+      const status = req.query.status;
+      let p2;
+      if (userValidasi.role === "Admin") {
+        p2 = await pju.findAll({
+          include: user,
+          where: { status },
+        });
+      } else {
+        p2 = await pju.findOne({
+          include: user,
+          where: { status, userId: userValidasi.id },
+        });
+      }
+
       res.status(200).send({
         status: "Success",
         message:

@@ -10,7 +10,7 @@ const {
 } = require("../controllers/pju.controller.js");
 const { auth } = require("../middlewares/auth.js");
 
-router.get("/", getAllpju);
+router.get("/", auth, getAllpju);
 router.get("/:id", getpjuByID);
 router.post("/", auth, addpju);
 router.delete("/:id", deletepjuByID);

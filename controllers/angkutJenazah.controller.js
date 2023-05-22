@@ -6,12 +6,23 @@ const { angkut_jenazah, user } = models;
 module.exports = {
   getAllangkutJenazah: async (req, res) => {
     try {
-      const status = req.query.status;
-      console.log(status);
-      const p5 = await angkut_jenazah.findAll({
-        include: user,
-        where: { status },
+      const userValidasi = await user.findOne({
+        where: { id: req.userId },
       });
+      const status = req.query.status;
+
+      let p5;
+      if (userValidasi.role === "Admin") {
+        p5 = await angkut_jenazah.findAll({
+          include: user,
+          where: { status },
+        });
+      } else {
+        p5 = await angkut_jenazah.findOne({
+          include: user,
+          where: { status, userId: userValidasi.id },
+        });
+      }
       res.status(200).send({
         status: "Success",
         message:

@@ -12,7 +12,7 @@ const {
 const { upload } = require("../middlewares/uploadFile.js");
 const { auth } = require("../middlewares/auth.js");
 
-router.get("/", getAllangkutJenazah);
+router.get("/", auth, getAllangkutJenazah);
 router.get("/:id", getangkutJenazahByID);
 // router.get("/status/:status", getangkutJenazahByStatus);
 router.post("/", auth, upload.single("file_angkut_jenazah"), addangkutJenazah);

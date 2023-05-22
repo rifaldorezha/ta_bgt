@@ -1,6 +1,13 @@
 const models = require("../models");
-const { user, pangkas_pohon, pju, makam_pacekeras, rusunawa, angkut_jenazah, psu } =
-  models;
+const {
+  user,
+  pangkas_pohon,
+  pju,
+  makam_pacekeras,
+  rusunawa,
+  angkut_jenazah,
+  psu,
+} = models;
 const { parse } = require("path");
 const { cld } = require("../middlewares/uploadFile.js");
 const bcrypt = require("bcryptjs");
@@ -23,7 +30,10 @@ module.exports = {
         });
       }
 
-      const isValidPassword = await bcrypt.compare(users.password, checkId.password);
+      const isValidPassword = await bcrypt.compare(
+        users.password,
+        checkId.password
+      );
       if (!isValidPassword) {
         return res.status(500).send({
           status: "failed",
@@ -213,7 +223,6 @@ module.exports = {
       const userValidasi = await user.findOne({
         where: { id: req.userId },
       });
-      console.log("uservalidasi >>>", userValidasi.id);
 
       const id = userValidasi.id;
 
@@ -349,7 +358,6 @@ module.exports = {
         ...users,
       };
 
-      console.log("file >>>>>>>>", { ...req.file });
       await user.update(users, {
         where: { id },
       });

@@ -6,11 +6,25 @@ const { pangkas_pohon, user } = models;
 module.exports = {
   getAllPangkas_pohon: async (req, res) => {
     try {
-      const status = req.query.status;
-      const p1 = await pangkas_pohon.findAll({
-        include: user,
-        where: { status },
+      const userValidasi = await user.findOne({
+        where: { id: req.userId },
       });
+      // console.log("uservalidasi >>>", userValidasi.id);
+
+      const status = req.query.status;
+      let p1;
+      if (userValidasi.role === "Admin") {
+        p1 = await pangkas_pohon.findAll({
+          include: user,
+          where: { status },
+        });
+      } else {
+        p1 = await pangkas_pohon.findOne({
+          include: user,
+          where: { status, userId: userValidasi.id },
+        });
+      }
+
       res.status(200).send({
         status: "Success",
         message:
@@ -64,7 +78,7 @@ module.exports = {
       return res.status(400).json({ msg: "No file Uploaded" });
     const pangkas_pohons = req.body;
     try {
-      console.log("req.userId >>>", req.userId);
+      // console.log("req.userId >>>", req.userId);
       const userValidasi = await user.findOne({
         where: { id: req.userId },
       });

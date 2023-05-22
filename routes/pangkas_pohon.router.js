@@ -12,7 +12,7 @@ const {
 const { upload } = require("../middlewares/uploadFile.js");
 const { auth } = require("../middlewares/auth.js");
 
-router.get("/", getAllPangkas_pohon);
+router.get("/", auth, getAllPangkas_pohon);
 router.get("/:id", getPangkas_pohonByID);
 router.post("/", auth, upload.single("pohonImg"), addPangkas_pohon);
 router.delete("/:id", deletePangkas_pohonByID);

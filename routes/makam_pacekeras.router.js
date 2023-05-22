@@ -12,7 +12,7 @@ const {
 const { upload } = require("../middlewares/uploadFile.js");
 const { auth } = require("../middlewares/auth.js");
 
-router.get("/", getAllmakamPacekeras);
+router.get("/", auth, getAllmakamPacekeras);
 router.get("/:id", getmakamPacekerasByID);
 // router.get("/status/:status", getmakamPacekerasByStatus);
 router.post("/", auth, upload.single("file_rekom_rs"), addmakamPacekeras);
