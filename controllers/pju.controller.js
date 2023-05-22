@@ -116,8 +116,7 @@ module.exports = {
       .then(function (deletedRecord) {
         if (deletedRecord === 1) {
           res.status(200).json({
-            message:
-              "Deleted data pengaduan Penerangan Jalan Umum successfully",
+            message: "Deleted data pengaduan Penerangan Jalan Umum successfully",
           });
         } else {
           res.status(404).json({
@@ -145,6 +144,7 @@ module.exports = {
         });
         res.status(201).send({
           message: "Data pengaduan Penerangan Jalan Umum updated!",
+          status: "Success",
           data: pjuId,
         });
       } else {
