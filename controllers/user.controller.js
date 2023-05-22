@@ -1,13 +1,6 @@
 const models = require("../models");
-const {
-  user,
-  pangkas_pohon,
-  pju,
-  makam_pacekeras,
-  rusunawa,
-  angkut_jenazah,
-  psu,
-} = models;
+const { user, pangkas_pohon, pju, makam_pacekeras, rusunawa, angkut_jenazah, psu } =
+  models;
 const { parse } = require("path");
 const { cld } = require("../middlewares/uploadFile.js");
 const bcrypt = require("bcryptjs");
@@ -30,10 +23,7 @@ module.exports = {
         });
       }
 
-      const isValidPassword = await bcrypt.compare(
-        users.password,
-        checkId.password
-      );
+      const isValidPassword = await bcrypt.compare(users.password, checkId.password);
       if (!isValidPassword) {
         return res.status(500).send({
           status: "failed",
@@ -260,17 +250,36 @@ module.exports = {
 
   getUserByid: async (req, res) => {
     const { id } = req.params;
+    const layanan = req.query.layanan;
     try {
-      const userPk = await user.findByPk(id, {
-        include: [
-          { model: pangkas_pohon },
-          { model: pju },
-          { model: makam_pacekeras },
-          { model: rusunawa },
-          { model: angkut_jenazah },
-          { model: psu },
-        ],
-      });
+      let userPk = [];
+
+      if (layanan === "psu") {
+        userPk = await user.findByPk(id, {
+          include: [{ model: psu }],
+        });
+      } else if (layanan === "pju") {
+        userPk = await user.findByPk(id, {
+          include: [{ model: pju }],
+        });
+      } else if (layanan === "makam_pacekeras") {
+        userPk = await user.findByPk(id, {
+          include: [{ model: makam_pacekeras }],
+        });
+      } else if (layanan === "rusunawa") {
+        userPk = await user.findByPk(id, {
+          include: [{ model: rusunawa }],
+        });
+      } else if (layanan === "angkut_jenazah") {
+        userPk = await user.findByPk(id, {
+          include: [{ model: angkut_jenazah }],
+        });
+      } else {
+        userPk = await user.findByPk(id, {
+          include: [{ model: pangkas_pohon }],
+        });
+      }
+
       res.status(200).send({
         status: "Success",
         message: "Get User with id",
