@@ -1,6 +1,13 @@
 const models = require("../models");
-const { user, pangkas_pohon, pju, makam_pacekeras, rusunawa, angkut_jenazah, psu } =
-  models;
+const {
+  user,
+  pangkas_pohon,
+  pju,
+  makam_pacekeras,
+  rusunawa,
+  angkut_jenazah,
+  psu,
+} = models;
 const { parse } = require("path");
 const { cld } = require("../middlewares/uploadFile.js");
 const bcrypt = require("bcryptjs");
@@ -23,7 +30,10 @@ module.exports = {
         });
       }
 
-      const isValidPassword = await bcrypt.compare(users.password, checkId.password);
+      const isValidPassword = await bcrypt.compare(
+        users.password,
+        checkId.password
+      );
       if (!isValidPassword) {
         return res.status(500).send({
           status: "failed",
@@ -308,16 +318,20 @@ module.exports = {
         } = await user.findOne({ where: { id } });
         console.log("data values >>>", profileImg);
 
-        cld.v2.uploader.destroy(
-          "dinas_perumahan/" + parse(profileImg).name,
-          function (error, result) {
-            if (error) {
-              console.log(error, " Gagal deleted file profile image!");
-            } else {
-              console.log(result, " Berhasil deleted file profile image!");
+        if (profileImg !== null) {
+          cld.v2.uploader.destroy(
+            "dinas_perumahan/" + parse(profileImg).name,
+            function (error, result) {
+              if (error) {
+                console.log(error, " Gagal deleted file profile image!");
+              } else {
+                console.log(result, " Berhasil deleted file profile image!");
+              }
             }
-          }
-        );
+          );
+        } else {
+          console.log("Tidak memiliki Profile image!");
+        }
 
         await user.destroy({
           where: { id },
@@ -344,7 +358,7 @@ module.exports = {
   updateUserByid: async (req, res) => {
     const { id } = req.params;
     let users = req.body;
-    console.log("Req Files: ", req.file.path);
+    console.log("Req files : ", req.file.path);
     try {
       const data = await user.findOne({ where: { id } });
 
@@ -356,7 +370,10 @@ module.exports = {
             if (error) {
               console.log(error, " Gagal deleted file profile image!");
             } else {
-              console.log(result, " Berhasil deleted file profile image!");
+              console.log(
+                result,
+                " Berhasil deleted and Updated file profile image!"
+              );
             }
           }
         );

@@ -17,6 +17,8 @@ module.exports = {
           model: "users",
           key: "id",
         },
+        onDelete: "cascade",
+        onUpdate: "cascade",
       },
       deskripsi_pengaduan: {
         type: Sequelize.STRING,

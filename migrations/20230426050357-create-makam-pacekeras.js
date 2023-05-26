@@ -17,6 +17,8 @@ module.exports = {
           model: "users",
           key: "id",
         },
+        onDelete: "cascade",
+        onUpdate: "cascade",
       },
       file_rekom_rs: {
         type: Sequelize.STRING,

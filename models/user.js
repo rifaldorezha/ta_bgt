@@ -4,28 +4,28 @@ module.exports = (sequelize, DataTypes) => {
   class user extends Model {
     static associate(models) {
       this.hasMany(models.pangkas_pohon, {
-        onDelete: "CASCADE",
-        onUpdate: "CASCADE",
+        // onDelete: "CASCADE",
+        // onUpdate: "CASCADE",
       });
       this.hasMany(models.pju, {
-        onDelete: "CASCADE",
-        onUpdate: "CASCADE",
+        // onDelete: "CASCADE",
+        // onUpdate: "CASCADE",
       });
       this.hasMany(models.makam_pacekeras, {
-        onDelete: "CASCADE",
-        onUpdate: "CASCADE",
+        // onDelete: "CASCADE",
+        // onUpdate: "CASCADE",
       });
       this.hasMany(models.rusunawa, {
-        onDelete: "CASCADE",
-        onUpdate: "CASCADE",
+        // onDelete: "CASCADE",
+        // onUpdate: "CASCADE",
       });
       this.hasMany(models.angkut_jenazah, {
-        onDelete: "CASCADE",
-        onUpdate: "CASCADE",
+        // onDelete: "CASCADE",
+        // onUpdate: "CASCADE",
       });
       this.hasMany(models.psu, {
-        onDelete: "CASCADE",
-        onUpdate: "CASCADE",
+        // onDelete: "CASCADE",
+        // onUpdate: "CASCADE",
       });
     }
   }

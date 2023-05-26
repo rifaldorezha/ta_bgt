@@ -17,6 +17,8 @@ module.exports = {
           model: "users",
           key: "id",
         },
+        onDelete: "cascade",
+        onUpdate: "cascade",
       },
       status_kawin: {
         type: Sequelize.STRING,

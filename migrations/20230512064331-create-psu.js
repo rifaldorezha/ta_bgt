@@ -17,6 +17,8 @@ module.exports = {
           model: "users",
           key: "id",
         },
+        onDelete: "cascade",
+        onUpdate: "cascade",
       },
       nama_perusahaan: {
         type: Sequelize.STRING,
