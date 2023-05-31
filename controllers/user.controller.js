@@ -1,13 +1,6 @@
 const models = require("../models");
-const {
-  user,
-  pangkas_pohon,
-  pju,
-  makam_pacekeras,
-  rusunawa,
-  angkut_jenazah,
-  psu,
-} = models;
+const { user, pangkas_pohon, pju, makam_pacekeras, rusunawa, angkut_jenazah, psu } =
+  models;
 const { parse } = require("path");
 const { cld } = require("../middlewares/uploadFile.js");
 const bcrypt = require("bcryptjs");
@@ -30,10 +23,7 @@ module.exports = {
         });
       }
 
-      const isValidPassword = await bcrypt.compare(
-        users.password,
-        checkId.password
-      );
+      const isValidPassword = await bcrypt.compare(users.password, checkId.password);
       if (!isValidPassword) {
         return res.status(500).send({
           status: "failed",
@@ -358,7 +348,7 @@ module.exports = {
   updateUserByid: async (req, res) => {
     const { id } = req.params;
     let users = req.body;
-    console.log("Req files : ", req.file.path);
+    // console.log("Req files : ", req.file.path);
     try {
       const data = await user.findOne({ where: { id } });
 
@@ -370,19 +360,26 @@ module.exports = {
             if (error) {
               console.log(error, " Gagal deleted file profile image!");
             } else {
-              console.log(
-                result,
-                " Berhasil deleted and Updated file profile image!"
-              );
+              console.log(result, " Berhasil deleted and Updated file profile image!");
             }
           }
         );
       }
 
-      users = {
-        profileImg: req.file.path,
-        ...users,
-      };
+      const salt = await bcrypt.genSalt(10);
+      const hashPassword = await bcrypt.hash(req.body.password, salt);
+
+      if (req.file === undefined) {
+        users = {
+          ...users,
+          password: hashPassword,
+        };
+      } else {
+        users = {
+          profileImg: req.file.path,
+          ...users,
+        };
+      }
 
       await user.update(users, {
         where: { id },
