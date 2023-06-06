@@ -1,11 +1,19 @@
 const models = require("../models");
-const { user, pangkas_pohon, pju, makam_pacekeras, rusunawa, angkut_jenazah, psu } =
-  models;
+const {
+  user,
+  pangkas_pohon,
+  pju,
+  makam_pacekeras,
+  rusunawa,
+  angkut_jenazah,
+  psu,
+} = models;
 const { parse } = require("path");
 const { cld } = require("../middlewares/uploadFile.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
+const { log } = require("console");
 
 module.exports = {
   login: async (req, res) => {
@@ -23,7 +31,10 @@ module.exports = {
         });
       }
 
-      const isValidPassword = await bcrypt.compare(users.password, checkId.password);
+      const isValidPassword = await bcrypt.compare(
+        users.password,
+        checkId.password
+      );
       if (!isValidPassword) {
         return res.status(500).send({
           status: "failed",
@@ -360,7 +371,10 @@ module.exports = {
             if (error) {
               console.log(error, " Gagal deleted file profile image!");
             } else {
-              console.log(result, " Berhasil deleted and Updated file profile image!");
+              console.log(
+                result,
+                " Berhasil deleted and Updated file profile image!"
+              );
             }
           }
         );
@@ -375,9 +389,11 @@ module.exports = {
           password: hashPassword,
         };
       } else {
+        console.log("else");
         users = {
           profileImg: req.file.path,
           ...users,
+          password: hashPassword,
         };
       }
 
