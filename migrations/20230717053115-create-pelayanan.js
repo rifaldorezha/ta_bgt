@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("pjus", {
+    await queryInterface.createTable("pelayanans", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -20,20 +20,10 @@ module.exports = {
         onDelete: "cascade",
         onUpdate: "cascade",
       },
-      deskripsi_pengaduan: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      status: {
-        type: Sequelize.ENUM,
-        allowNull: false,
-        values: ["Proses", "Ditolak", "Diterima"],
-        defaultValue: "Proses",
-      },
-      keterangan: {
+      type_pelayanan: {
         type: Sequelize.STRING,
       },
-      bukti_pjuImg: {
+      jumlah: {
         type: Sequelize.STRING,
       },
       createdAt: {
@@ -47,6 +37,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("pjus");
+    await queryInterface.dropTable("pelayanans");
   },
 };

@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       pohonImg: DataTypes.STRING,
       status: DataTypes.STRING,
       keterangan: DataTypes.STRING,
+      bukti_pohonImg: DataTypes.STRING,
     },
     {
       sequelize,

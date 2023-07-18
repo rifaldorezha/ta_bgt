@@ -37,6 +37,9 @@ module.exports = {
       keterangan: {
         type: Sequelize.STRING,
       },
+      bukti_pohonImg: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

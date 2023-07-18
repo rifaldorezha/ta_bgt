@@ -184,53 +184,67 @@ module.exports = {
       });
     }
   },
+
+  updateBuktiPangkas_pohonByID: async (req, res) => {
+    const { id } = req.params;
+
+    console.log("Req Files: ", req.file.path);
+    if (req.files === null)
+      return res.status(400).json({ msg: "No file Uploaded" });
+
+    try {
+      const userValidasi = await user.findOne({
+        where: { id: req.userId },
+      });
+      // console.log("uservalidasi >>>", userValidasi.role);
+      if (userValidasi.role === "Admin") {
+        const pangkas = await pangkas_pohon.findOne({ where: { id } });
+        if (pangkas.status !== "Diterima") {
+          // console.log("Bukan Diterima");
+
+          if (req.files !== null) {
+            cld.v2.uploader.destroy(
+              "dinas_perumahan/" + parse(req.file.path).name,
+              function (error, result) {
+                if (error) {
+                  console.log(error, " Gagal deleted file bukti pohonImg!");
+                } else {
+                  console.log(result, " Berhasil deleted file bukti pohonImg!");
+                }
+              }
+            );
+          }
+        } else {
+          await pangkas_pohon.update(
+            { bukti_pohonImg: req.file.path },
+            {
+              where: { id, status: "Diterima" },
+            }
+          );
+        }
+
+        const pohonId = await pangkas_pohon.findOne({
+          where: { id },
+          include: [{ model: user }],
+        });
+        res.status(200).send({
+          status: "Success",
+          message:
+            "resource has successfully Upload Bukti Pelayanan Pemangkasan Pohon",
+          data: pohonId,
+        });
+      } else {
+        res.status(500).send({
+          status: "failed",
+          message: `Gagal update bukti data pengaduan Pemangkasan Pohon, kamu ${userValidasi.role}`,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        status: "failed",
+        message: "Update not found",
+      });
+    }
+  },
 };
-
-// update delete
-// await pangkas_pohon
-//           .findOne({ where: { id } })
-//           .then((file) => {
-//             if (file) {
-//               const datavalues = file.dataValues;
-//               // console.log(datavalues);
-
-//               let namaImg = path.basename(datavalues.pohonImg);
-//               // console.log("filename >>>>", fileName);
-//               fs.unlink(`public/pangkas_pohons/${namaImg}`, (err) => {
-//                 if (err) {
-//                   console.error(err);
-//                   return;
-//                 }
-//                 console.log("delete file lama sukses");
-//               });
-//             } else {
-//               console.log(`Data not found for ID ${id}`);
-//             }
-//           })
-//           .catch((error) => {
-//             console.error(`Error: ${error}`);
-//           });
-
-//         const pathfile = process.env.PATH_FILE_PANGKAS;
-//         pangkas_pohons = {
-//           pohonImg: pathfile + req.files.pohonImg[0].filename,
-//           ...pangkas_pohons,
-//         };
-
-// Delete
-// if (file) {
-//   const datavalues = file.dataValues;
-//   // console.log(datavalues);
-
-//   let namaImg = path.basename(datavalues.pohonImg);
-//   // console.log("filename >>>>", fileName);
-//   fs.unlink(`public/pangkas_pohons/${namaImg}`, (err) => {
-//     if (err) {
-//       console.error(err);
-//       return;
-//     }
-//     console.log("delete file lama sukses");
-//   });
-// } else {
-//   console.log(`Data not found for ID ${id}`);
-// }

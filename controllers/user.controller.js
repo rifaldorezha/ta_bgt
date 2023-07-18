@@ -123,7 +123,7 @@ module.exports = {
         });
       }
 
-      if (users.id.length < 16) {
+      if (users.id.length !== 16) {
         return res.status(500).send({
           status: "failed",
           message: "Pastikan id/NIK yang dimasukkan benar!",

@@ -27,6 +27,10 @@ module.exports = (sequelize, DataTypes) => {
         // onDelete: "CASCADE",
         // onUpdate: "CASCADE",
       });
+      this.hasMany(models.pelayanan, {
+        // onDelete: "CASCADE",
+        // onUpdate: "CASCADE",
+      });
     }
   }
   user.init(

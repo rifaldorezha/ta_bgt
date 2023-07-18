@@ -8,6 +8,7 @@ const makamRouter = require("./makam_pacekeras.router.js");
 const rusunawaRouter = require("./rusunawa.router.js");
 const angkutJenazahRouter = require("./angkut_jenazah.router.js");
 const psuRouter = require("./psu.router.js");
+const pelayananRouter = require("./pelayanan.router.js");
 
 router.use("/user", userRouter);
 router.use("/pangkas_pohon", pangkas_pohonRouter);
@@ -16,5 +17,6 @@ router.use("/makam_pacekeras", makamRouter);
 router.use("/rusunawa", rusunawaRouter);
 router.use("/angkut_jenazah", angkutJenazahRouter);
 router.use("/psu", psuRouter);
+router.use("/pelayanan", pelayananRouter);
 
 module.exports = router;

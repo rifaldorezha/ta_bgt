@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       deskripsi_pengaduan: DataTypes.STRING,
       status: DataTypes.STRING,
       keterangan: DataTypes.STRING,
+      bukti_pjuImg: DataTypes.STRING,
     },
     {
       sequelize,

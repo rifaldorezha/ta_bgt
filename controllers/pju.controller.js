@@ -116,7 +116,8 @@ module.exports = {
       .then(function (deletedRecord) {
         if (deletedRecord === 1) {
           res.status(200).json({
-            message: "Deleted data pengaduan Penerangan Jalan Umum successfully",
+            message:
+              "Deleted data pengaduan Penerangan Jalan Umum successfully",
           });
         } else {
           res.status(404).json({
@@ -155,6 +156,68 @@ module.exports = {
       }
     } catch (error) {
       res.status(404).json({ message: "Data tidak ditemukan" });
+    }
+  },
+
+  updateBuktipjuByID: async (req, res) => {
+    const { id } = req.params;
+
+    console.log("Req Files: ", req.file.path);
+    if (req.files === null)
+      return res.status(400).json({ msg: "No file Uploaded" });
+
+    try {
+      const userValidasi = await user.findOne({
+        where: { id: req.userId },
+      });
+      // console.log("uservalidasi >>>", userValidasi.role);
+      if (userValidasi.role === "Admin") {
+        const pjus = await pju.findOne({ where: { id } });
+        if (pjus.status !== "Diterima") {
+          // console.log("Bukan Diterima");
+
+          if (req.files !== null) {
+            cld.v2.uploader.destroy(
+              "dinas_perumahan/" + parse(req.file.path).name,
+              function (error, result) {
+                if (error) {
+                  console.log(error, " Gagal deleted file bukti pjuImg!");
+                } else {
+                  console.log(result, " Berhasil deleted file bukti pjuImg!");
+                }
+              }
+            );
+          }
+        } else {
+          await pju.update(
+            { bukti_pjuImg: req.file.path },
+            {
+              where: { id, status: "Diterima" },
+            }
+          );
+        }
+
+        const pjuId = await pju.findOne({
+          where: { id },
+          include: [{ model: user }],
+        });
+        res.status(200).send({
+          status: "Success",
+          message: "resource has successfully Upload Bukti Pelayanan PJU",
+          data: pjuId,
+        });
+      } else {
+        res.status(500).send({
+          status: "failed",
+          message: `Gagal update bukti data Pelayanan PJU, kamu ${userValidasi.role}`,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        status: "failed",
+        message: "Update not found",
+      });
     }
   },
 };
