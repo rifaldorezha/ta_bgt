@@ -112,6 +112,10 @@ Admin :
 
   `  put: localhost:3000/pangkas_pohon/:id`
 
+- updateBuktiPangkas_pohonByid
+
+  `  put: localhost:3000/pangkas_pohon/bukti/:id`
+
 ## Api PELAYANAN PENERANGAN ATAU PERBAIKAN JALAN UMUM
 
 - getAllpju(status)
@@ -135,6 +139,10 @@ Admin :
 - updatepjuByid
 
   `  put: localhost:3000/pju/:id`
+
+- updateBuktipjuByid
+
+  `  put: localhost:3000/pju/bukti/:id`
 
 ## Api PELAYANAN CALON PENGHUNI RUSUNAWA
 
