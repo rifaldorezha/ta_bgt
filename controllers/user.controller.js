@@ -7,13 +7,13 @@ const {
   rusunawa,
   angkut_jenazah,
   psu,
+  pelayanan,
 } = models;
 const { parse } = require("path");
 const { cld } = require("../middlewares/uploadFile.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
-const { log } = require("console");
 
 module.exports = {
   login: async (req, res) => {
@@ -31,10 +31,7 @@ module.exports = {
         });
       }
 
-      const isValidPassword = await bcrypt.compare(
-        users.password,
-        checkId.password
-      );
+      const isValidPassword = await bcrypt.compare(users.password, checkId.password);
       if (!isValidPassword) {
         return res.status(500).send({
           status: "failed",
@@ -371,10 +368,7 @@ module.exports = {
             if (error) {
               console.log(error, " Gagal deleted file profile image!");
             } else {
-              console.log(
-                result,
-                " Berhasil deleted and Updated file profile image!"
-              );
+              console.log(result, " Berhasil deleted and Updated file profile image!");
             }
           }
         );
@@ -421,6 +415,71 @@ module.exports = {
       res.status(500).send({
         status: "failed",
         message: "Update not found",
+      });
+    }
+  },
+
+  addRecordJumlahLayanan: async (req, res) => {
+    try {
+      const userValidasi = await user.findOne({
+        where: { id: req.userId },
+      });
+      console.log("uservalidasi >>>", userValidasi.role);
+
+      if (userValidasi.role === "Guest") {
+        await pelayanan.create({
+          userId: userValidasi.id,
+          type_pelayanan: req.query.layanan,
+          jumlah: 1,
+        });
+
+        res.status(200).send({
+          status: "Success",
+          message: "record jumlah layanan berhasil",
+        });
+      } else {
+        res.status(500).send({
+          status: "failed",
+          message: `Gagal record jumlah layanan, kamu ${userValidasi.role}`,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        status: "failed",
+        message: "Something went wrong",
+      });
+    }
+  },
+
+  getCountJumlahLayananPerUser: async (req, res) => {
+    try {
+      const userValidasi = await user.findOne({
+        where: { id: req.userId },
+      });
+
+      const layanan = req.query.layanan;
+
+      const count = await pelayanan.count({
+        where: {
+          type_pelayanan: layanan,
+          userId: userValidasi.id,
+          createdAt: {
+            [Op.gte]: new Date(new Date() - 24 * 60 * 60 * 1000),
+          },
+        },
+      });
+
+      res.status(200).send({
+        status: "Success",
+        message: "get count jumlah layanan per user",
+        data: count,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        status: "failed",
+        message: "Something went wrong",
       });
     }
   },

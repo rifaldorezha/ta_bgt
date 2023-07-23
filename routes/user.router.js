@@ -10,6 +10,8 @@ const {
   addUser,
   deleteUserByid,
   updateUserByid,
+  addRecordJumlahLayanan,
+  getCountJumlahLayananPerUser,
 } = require("../controllers/user.controller.js");
 const { upload } = require("../middlewares/uploadFile.js");
 const { auth } = require("../middlewares/auth.js");
@@ -22,5 +24,8 @@ router.get("/check_auth", auth, checkAuth);
 router.get("/pengaduan/auth/", auth, getAllpengaduanbyAuth);
 router.delete("/users/:id", auth, deleteUserByid);
 router.put("/users/:id", upload.single("profileImg"), updateUserByid);
+
+router.post("/jumlah_layanan", auth, addRecordJumlahLayanan);
+router.get("/jumlah_layanan", auth, getCountJumlahLayananPerUser);
 
 module.exports = router;
