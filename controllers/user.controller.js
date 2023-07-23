@@ -460,12 +460,32 @@ module.exports = {
 
       const layanan = req.query.layanan;
 
+      const TODAY = new Date();
+      console.log("TODAY >>>", TODAY);
+
+      // today === 2021-08-10
+
       const count = await pelayanan.count({
         where: {
-          type_pelayanan: layanan,
           userId: userValidasi.id,
+          type_pelayanan: layanan,
           createdAt: {
-            [Op.gte]: new Date(new Date() - 24 * 60 * 60 * 1000),
+            [Op.gte]: new Date(
+              TODAY.getFullYear(),
+              TODAY.getMonth(),
+              TODAY.getDate(),
+              0,
+              0,
+              0
+            ),
+            [Op.lt]: new Date(
+              TODAY.getFullYear(),
+              TODAY.getMonth(),
+              TODAY.getDate(),
+              23,
+              59,
+              59
+            ),
           },
         },
       });
