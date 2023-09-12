@@ -3,7 +3,8 @@
     "username": "root",
     "password": "Sqlrezha12",
     "database": "ta_bgt",
-    "host": "127.0.0.1",
+    "host": "0.tcp.ap.ngrok.io",
+    "port": 14248,
     "dialect": "mysql"
   },
   "test": {
